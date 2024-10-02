@@ -1,0 +1,102 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000000;
+  }
+  
+  .signup-page {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .main-cont {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    height: 90vh;
+    position: relative;
+  }
+  
+  #robot {
+    width: 60%;
+    height: 100%;
+    border: none;
+  }
+  
+  .info {
+    width: 40%;
+    padding: 40px;
+    display: flex;
+    /* border:2px solid white; */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    font-size: 60px;
+    margin-bottom: 20px;
+    color:rgb(255,255,255);
+    font-weight:bolder;
+  }
+  
+  .signup-form {
+    width: 100%;
+    display: flex;
+    /* border:2px solid white; */
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .signup-form input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    background:rgb(43, 39, 40);
+  }
+  
+  .signup-form input::placeholder {
+    color: #aaa;
+  }
+  
+  .signup-btn {
+    padding: 12px;
+    background-color: rgb(234,67,89);
+    color: white;
+    border: none;
+    width:100%;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  
+  .signup-btn:hover {
+    background-color: #b33636;
+  }
+  
+  .options {
+    margin-top: 20px;
+  }
+  
+  .options a {
+    text-decoration: none;
+    color: rgb(255,255,255);
+    font-weight:bold;
+  }
+  
+  .options a:hover {
+    text-decoration: none;
+  }
+  

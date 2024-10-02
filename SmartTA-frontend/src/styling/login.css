@@ -1,0 +1,79 @@
+body {
+    background-color:rgb(0,0,0);
+    color:rgb(255,255,255);
+    font-family: Arial, sans-serif;
+  }
+  #robot{
+    border:none;
+  }
+  .login-main-cont{
+    display:flex;
+    width:100vw;
+    height:100vh;
+  }
+
+
+.login-info {
+    width: 40%;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    font-size: 60px;
+    margin-bottom: 20px;
+    color:rgb(255,255,255);
+    font-weight:bolder;
+  }
+  
+  .login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .login-form input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    background:rgb(43, 39, 40);
+  }
+  
+  .login-btn {
+    padding: 12px;
+    background-color: rgb(234,67,89);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight:bolder;
+  }
+  
+  .login-btn:hover {
+    background-color: rgb(140, 31, 57);
+  }
+  
+  .options {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .options a {
+    text-decoration: none;
+    color: rgb(255,255,255);
+    font-weight:bold;
+  }
+  
+  .options a:hover {
+    text-decoration: underline;
+  }
