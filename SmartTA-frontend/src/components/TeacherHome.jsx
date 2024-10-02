@@ -52,12 +52,13 @@ const TeacherHome = () => {
 }
   return (
     <div className="main-teacher-home">
-        <div className="logo"> 
+       
+    <div className="logo"> 
         Smart<span style={{ color: "rgb(234,67,89)" }}>TA</span>
         </div>
         <div className="msg-robo-cont">
         <div className="welcome-msg"> 
-        Welcome, Hadi
+        Welcome, Prof. Hadi
         </div>
 
         <div className="walking-robo">
@@ -102,6 +103,7 @@ const TeacherHome = () => {
     <div className="submit-cont">
         <button className='btn-submit' type='submit'>Evaluate</button>
     </div>
+
     </div>
   )
 }
