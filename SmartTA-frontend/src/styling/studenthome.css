@@ -1,0 +1,120 @@
+body{
+    background:rgb(0,0,0);
+    box-sizing:border-box;
+    margin: 0; 
+    padding: 0; 
+    height: 100%;
+  }
+  
+  .main-student-home{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    box-sizing:border-box;
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+  }
+  
+  .student-lo-btn-cont{
+    position:absolute;
+    top:15px;
+    right:25px;
+    width:8%;
+  }
+  
+  .student-lo-btn{
+    padding: 12px;
+    background-color: rgb(234,67,89);
+    color: white;
+    border: none;
+    width:100%;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  .student-lo-btn:hover{
+    background-color:#b33636;
+  }
+
+  
+  .logo{
+    font-size: 65px;
+    color:rgb(255,255,255);
+    font-weight:bolder;
+    margin:0;
+    padding:0;
+    width:100%;
+    display:flex;
+    align-items:flex-start;
+    justify-center:flex-start;
+    padding-left:5%;
+    padding-top:1%;
+  }
+  
+  .welcome-msg{
+    font-size: 45px;
+    color:rgb(255,255,255);
+    font-weight:bolder;
+    width:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:italic;
+  }
+  
+  .assignments-container {
+    width: 90%;
+    margin-top: 20px;
+    padding: 20px;
+    background: rgb(97, 97, 97);
+    border-radius: 16px;
+    color: white;
+  }
+  
+  .assignments-container h2 {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .assignment-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: rgb(80, 80, 80);
+    border-radius: 8px;
+  }
+  
+  .assignment-item h3 {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .assignment-item p {
+    margin: 5px 0;
+    font-size: 18px;
+  }
+  
+  .walking-robo{
+    width:50%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    margin-right:6%;
+  }
+  
+  .walkingroboicon{
+    height:100%;
+    width:30%;
+  }
+  

@@ -1,0 +1,197 @@
+body {
+    background: rgb(0, 0, 0);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  .main-teacher-home {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .teacher-lo-btn-cont {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    width: 8%;
+  }
+  
+  .teacher-lo-btn {
+    padding: 12px;
+    background-color: rgb(234, 67, 89);
+    color: white;
+    border: none;
+    width: 100%;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  
+  .logo {
+    font-size: 65px;
+    color: rgb(255, 255, 255);
+    font-weight: bolder;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-left: 5%;
+    padding-top: 1%;
+  }
+  
+  .welcome-msg {
+    font-size: 45px;
+    color: rgb(255, 255, 255);
+    font-weight: bolder;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: italic;
+  }
+  
+  .grades-container {
+    width: 90%;
+    background: rgb(97, 97, 97);
+    padding: 20px;
+    border-radius: 16px;
+    color: white;
+    margin-top: 20px;
+  }
+  
+  .grades-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .grades-table th, .grades-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+  
+  .grades-table th {
+    background-color: #333;
+    color: white;
+  }
+  
+  .edit-btn {
+    background-color: rgb(115,239,236);
+    border: none;
+    color: black;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .buttons-container {
+    display: flex;
+    justify-content: space-evenly;
+    width: 60%;
+    margin-top: 20px;
+  }
+  
+  .accept-btn, .retry-btn {
+    color: white;
+    padding: 18px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .accept-btn{
+    background-color:rgb(234,67,89);
+  }
+  
+  .retry-btn {
+    background-color: rgb(51,51,51);
+  }
+  
+  .accept-btn:hover {
+    background-color: #b33636;
+  }
+  
+  .retry-btn:hover {
+    background-color: rgb(30,30,30);
+  }
+  
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-content {
+    background: rgb(97, 97, 97);;
+    border-radius: 8px;
+    /* border:2px solid red; */
+    width: 400px;
+    text-align: center;
+    display:flex;
+    align-item:center;
+    justify-content:center;
+  }
+  .model-content-cont{
+    width:80%;
+    height:100%;
+    padding:10%;
+    /* border:2px solid yellow; */
+  }
+  .modal-content h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .modal-content input {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 20px;
+    margin-top:5%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .save-btn, .close-btn {
+    width:100%;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom:3%;
+  }
+  
+  .save-btn {
+    background-color: #5cb85c;
+    color: white;
+  }
+  
+  .close-btn {
+    background-color: #d9534f;
+    color: white;
+  }
+  
+  .review{
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 20px;
+  }

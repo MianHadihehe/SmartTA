@@ -78,7 +78,7 @@ const TeacherHome = () => {
         </div>
 
         <div className="walking-robo">
-          <img className='walkingroboicon' src={walkingRobo} alt="" />
+          {/* <img className='walkingroboicon' src={walkingRobo} alt="" /> */}
         </div>
       </div>
       

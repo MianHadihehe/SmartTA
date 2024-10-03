@@ -7,6 +7,8 @@ import OtpVerification from './components/OtpVerification';
 import SetNewPassword from './components/SetNewPassword';
 import PageNotFound from './components/PageNotFound';
 import TeacherHome from './components/TeacherHome';
+import StudentHome from './components/StudentHome';
+import TeacherGradesPage from './components/TeacherGradesPage';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/otp-verification" element={<OtpVerification />} />
         <Route path="/set-new-password" element={<SetNewPassword />} />
         <Route path="/teacher-home" element={<TeacherHome />} />
+        <Route path="/student-home" element={<StudentHome />} />
+        <Route path="/teacher-grades" element={<TeacherGradesPage />} />
         <Route path="*" element={<PageNotFound />} /> 
       </Routes>
     </Router>

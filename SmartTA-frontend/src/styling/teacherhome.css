@@ -25,7 +25,7 @@ body{
   width:8%;
   /* border:2px solid orange; */
 }
-.teacher-lo-btn{
+.-lo-btn{
   padding: 12px;
   background-color: rgb(234,67,89);
   color: white;
@@ -35,6 +35,11 @@ body{
   cursor: pointer;
   font-size: 18px;
 }
+
+.teacher-lo-btn:hover{
+  background-color:#b33636;
+}
+
 .logo{
     font-size: 65px;
     color:rgb(255,255,255);
