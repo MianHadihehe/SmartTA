@@ -79,6 +79,7 @@ html, body {
   }
   
   .signup-form input {
+    color:white;
     padding: 10px;
     font-size: 16px;
     border-radius: 5px;
@@ -86,6 +87,32 @@ html, body {
     box-sizing: border-box;
     background:rgb(43, 39, 40);
   }
+
+  .signup-form input:focus {
+    border: 2px solid rgb(234, 67, 89);
+    outline: none; /* Removes the default browser focus outline */
+    border-radius: 4px; /* Optional: makes the border corners rounded */
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 50px; /* Make room for the toggle button */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  color: rgb(234, 67, 89);
+}
+
   
   .signup-form input::placeholder {
     color: #aaa;
@@ -118,5 +145,25 @@ html, body {
   
   .signup-link {
     text-decoration: none;
+  }
+  
+  .role-select {
+    margin-top: 20px;
+  }
+  
+  .role-select label {
+    font-size: 16px;
+    color: rgb(170,170,170);
+  }
+  
+  .role-select select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background:black;
+    color:rgb(170,170,170);
   }
   
