@@ -26,8 +26,9 @@ const SetNewPassword = () => {
           src={splineURL}
           id="babyrobo"
           width="100%"
-          height="55%"
+          height="100%"
         ></iframe>
+        <div className="set-new-pass-temp"></div>
       </div>
       <div className="set-password-container">
         {submitted ? (

@@ -3,13 +3,25 @@ body {
     color:rgb(255,255,255);
     font-family: Arial, sans-serif;
   }
-  #robot{
-    border:none;
+  .robo-cont{
+    width:60%;
+    /* border:2px solid white; */
+    position:relative;
   }
   .login-main-cont{
     display:flex;
     width:100vw;
     height:100vh;
+  }
+
+  .temp{
+    position:absolute;
+    bottom:0px;
+    right:0px;
+    width:20%;
+    /* border:2px solid white; */
+    height:10%;
+    background:black;
   }
 
 
@@ -67,13 +79,13 @@ body {
     justify-content: space-between;
     width: 100%;
   }
-  
-  .options a {
+
+  .login-link{
     text-decoration: none;
     color: rgb(255,255,255);
     font-weight:bold;
   }
   
-  .options a:hover {
-    text-decoration: underline;
+  .login-link:hover {
+    text-decoration: none;
   }

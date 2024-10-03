@@ -19,17 +19,33 @@ html, body {
   
   .main-cont {
     display: flex;
-    width: 90%;
-    max-width: 1200px;
-    height: 90vh;
+    /* border:2px solid red; */
+    width: 100%;
+    height: 100vh;
     position: relative;
   }
-  
-  #robot {
-    width: 60%;
-    height: 100%;
-    border: none;
+
+  #robot{
+    border:none;
   }
+  
+  .robo-cont-signup{
+    width:60%;
+    border:none;
+    position:relative;
+  }
+
+  .temp-signup{
+    position:absolute;
+    bottom:0px;
+    right:0px;
+    width:20%;
+    /* border:2px solid white; */
+    height:10%;
+    background:black;
+  }
+
+
   
   .info {
     width: 40%;
@@ -42,12 +58,16 @@ html, body {
     background: black;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   }
-  
-  h2 {
+
+  .signup-heading{
     font-size: 60px;
     margin-bottom: 20px;
     color:rgb(255,255,255);
     font-weight:bolder;
+  }
+  
+  h2 {
+  
   }
   
   .signup-form {
@@ -90,13 +110,13 @@ html, body {
     margin-top: 20px;
   }
   
-  .options a {
+  .signup-link {
     text-decoration: none;
     color: rgb(255,255,255);
     font-weight:bold;
   }
   
-  .options a:hover {
+  .signup-link {
     text-decoration: none;
   }
   

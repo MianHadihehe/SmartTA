@@ -24,11 +24,7 @@ html, body {
     text-align: center;
     margin-top:15%;
   }
-  .box1{
-    width:25%;
-    /* border:2px solid white; */
-    height:100%;
-  }
+  
 
   .box2{
     width:25%;
@@ -38,6 +34,23 @@ html, body {
 
   #babyrobo{
     border:none;
+  }
+
+  .box1{
+    width:25%;
+    /* border:2px solid red; */
+    height:100%;
+    position:relative;
+  }
+
+  .enter-username-temp{
+    position:absolute;
+    right:0;
+    bottom:0;
+    width:50%;
+    /* border:2px solid orange; */
+    height:8%;
+    background:black;
   }
   
   h2 {

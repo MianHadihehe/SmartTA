@@ -45,8 +45,8 @@ body{
 }
 
 .drag-drop-area {
-    width: 80%;
-    height: 75vh;
+    width: 90%;
+    height: 55vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -68,8 +68,8 @@ body{
   }
 
   .upload-icon{
-    width:10%;
-    height:22%;
+    width:7%;
+    height:20%;
   }
 
   img{

@@ -21,8 +21,9 @@ const OtpVerification = () => {
           src={splineURL}
           id="babyrobo"
           width="100%"
-          height="55%"
+          height="100%"
         ></iframe>
+        <div className="enter-otp-temp"></div>
       </div>
       <div className="otp-container">
         {submitted ? (

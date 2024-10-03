@@ -15,10 +15,25 @@ html, body {
    height:100vh;
   }
   
-  .box1 {
+  #babyrobo{
+    border:none;
+  }
+
+  .box1{
     width:25%;
-    /* border:2px solid white; */
+    /* border:2px solid red; */
     height:100%;
+    position:relative;
+  }
+
+  .enter-otp-temp{
+    position:absolute;
+    right:0;
+    bottom:0;
+    width:50%;
+    /* border:2px solid orange; */
+    height:8%;
+    background:black;
   }
   
   .box2 {
