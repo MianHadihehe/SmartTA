@@ -7,12 +7,11 @@ const splineRoboURL = import.meta.env.VITE_ROBO_URL;
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
+  const [showPassword, setShowPassword] = useState(false); 
   const [error, setError] = useState('');
 
-  const navigate = useNavigate(); // Initialize navigate for programmatic navigation
+  const navigate = useNavigate(); 
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -32,7 +31,18 @@ const Login = () => {
 
       const data = await response.json();
       if (response.ok) {
-        navigate('/teacher-home');
+        console.log(data);
+        
+        const { username, role } = data;
+
+
+        if (role === 'teacher') {
+          navigate('/teacher-home', { state: { username } });
+        } else if (role === 'student') {
+          navigate('/student-home', { state: { username } });
+        } else {
+          setError('Invalid role');
+        }
       } else {
         setError('Invalid email or password');
       }
@@ -45,7 +55,7 @@ const Login = () => {
     <div className="login-main-cont">
       <div className="robo-cont">
         <iframe
-          src={splineRoboURL}
+          // src={splineRoboURL}
           id='robot'
           style={{ width: "100%", height: "100%" }}
         ></iframe>
@@ -58,7 +68,7 @@ const Login = () => {
           Smart<span style={{ color: "rgb(234,67,89)" }}>TA</span>
         </h1>
 
-        {error && <p className="error-message">{error}</p>} {/* Display error message */}
+        {error && <p className="error-message">{error}</p>} 
 
         <form className="login-form" onSubmit={handleSubmit}>
           <input
@@ -69,10 +79,10 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           
-          {/* Password Input with Show/Hide Toggle */}
+          
           <div className="password-field">
             <input
-              type={showPassword ? "text" : "password"}  // Toggle between text and password
+              type={showPassword ? "text" : "password"}  
               placeholder="Password"
               required
               value={password}

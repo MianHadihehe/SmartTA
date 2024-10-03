@@ -1,11 +1,20 @@
-import React from 'react'
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styling/teacherhome.css'; 
 import { useState } from 'react';
 import uploadIcon from '../assets/upload_icon.png';
 import walkingRobo from '../assets/walking-robo.gif';
 
 const TeacherHome = () => {
-    const [isDragging, setIsDragging] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate(); 
+
+  const { username } = location.state || {}; 
+
+  console.log('Username:', username); 
+
+  const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState([]);
   const [showUploadButton, setShowUploadButton] = useState(true);
 
@@ -42,70 +51,74 @@ const TeacherHome = () => {
     const selectedFilesArray = Array.from(selectedFiles);
 
     setFiles(selectedFilesArray);
-    setShowUploadButton(false); // Hide upload button on file select
+    setShowUploadButton(false); 
   };
 
   const renderFileList = () => {
     if (files.length === 0) {
       return <p>No folder dropped yet. Drag a folder here.</p>;
     }
-}
+  };
+
+  const handleLogout= () =>{
+    navigate('/');
+  }
+
   return (
     <div className="main-teacher-home">
-       
-    <div className="logo"> 
+      <div className="teacher-lo-btn-cont">
+        <button className='teacher-lo-btn' onClick={handleLogout}>Logout</button>
+      </div>
+      <div className="logo"> 
         Smart<span style={{ color: "rgb(234,67,89)" }}>TA</span>
-        </div>
-        <div className="msg-robo-cont">
+      </div>
+      <div className="msg-robo-cont">
         <div className="welcome-msg"> 
-        Welcome, Prof. Hadi
+          Welcome, Prof. {username}
         </div>
 
         <div className="walking-robo">
-        <img className='walkingroboicon' src={walkingRobo} alt="" />
-      </div>
-
+          <img className='walkingroboicon' src={walkingRobo} alt="" />
         </div>
-        
-
-        <ul>
+      </div>
+      
+      <ul>
         {files.map((file, index) => (
           <li key={index}>{file.name}</li>
         ))}
       </ul>
     
       <div
-      className={`drag-drop-area ${isDragging ? 'dragging' : ''}`}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-    >
+        className={`drag-drop-area ${isDragging ? 'dragging' : ''}`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
         <div className="upload-icon">
-        <img src={uploadIcon} alt="Upload icon" />
+          <img src={uploadIcon} alt="Upload icon" />
         </div>
-      <div className="drag-drop-message">
-        {isDragging ? 'Release to drop the folder' : 'Drag and drop a folder here'}
+        <div className="drag-drop-message">
+          {isDragging ? 'Release to drop the folder' : 'Drag and drop a folder here'}
+        </div>
+        {renderFileList()}
+        {showUploadButton && (
+          <div className="file-upload-btn-cont">
+            <input
+              type="file"
+              directory=""
+              webkitdirectory="" 
+              onChange={handleFileSelect}
+              className="file-upload-input"
+            />
+          </div>
+        )}
       </div>
-      {renderFileList()}
-      {showUploadButton && (
-        <div className="file-upload-btn-cont">
-          <input
-            type="file"
-            directory=""
-            webkitdirectory="" 
-            onChange={handleFileSelect}
-            className="file-upload-input"
-          />
-        </div>
-      )}
-    </div>
 
-    <div className="submit-cont">
+      <div className="submit-cont">
         <button className='btn-submit' type='submit'>Evaluate</button>
+      </div>
     </div>
+  );
+};
 
-    </div>
-  )
-}
-
-export default TeacherHome
+export default TeacherHome;

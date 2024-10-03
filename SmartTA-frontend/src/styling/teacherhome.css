@@ -18,6 +18,23 @@ body{
     left:0;
     right:0;
 }
+.teacher-lo-btn-cont{
+  position:absolute;
+  top:15px;
+  right:25px;
+  width:8%;
+  /* border:2px solid orange; */
+}
+.teacher-lo-btn{
+  padding: 12px;
+  background-color: rgb(234,67,89);
+  color: white;
+  border: none;
+  width:100%;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+}
 .logo{
     font-size: 65px;
     color:rgb(255,255,255);
