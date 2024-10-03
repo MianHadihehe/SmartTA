@@ -27,22 +27,62 @@ const TeacherHome = () => {
     setIsDragging(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
     setIsDragging(false);
-    
+  
     const items = e.dataTransfer.items;
     const droppedFiles = [];
-    
+  
+    const readDirectory = async (entry) => {
+      return new Promise((resolve, reject) => {
+        const dirReader = entry.createReader();
+        const entries = [];
+  
+        const readEntries = () => {
+          dirReader.readEntries(async (results) => {
+            if (!results.length) {
+              resolve(entries); 
+            } else {
+              for (const result of results) {
+                if (result.isDirectory) {
+                  entries.push(...await readDirectory(result)); 
+                } else {
+                  entries.push(result); 
+                }
+              }
+              readEntries(); 
+            }
+          }, reject);
+        };
+  
+        readEntries();
+      });
+    };
+  
     for (let i = 0; i < items.length; i++) {
-      if (items[i].webkitGetAsEntry().isDirectory) {
-        droppedFiles.push(items[i].getAsFile());
+      const entry = items[i].webkitGetAsEntry();
+      if (entry) {
+        if (entry.isDirectory) {
+          const filesFromDir = await readDirectory(entry);
+          droppedFiles.push(...filesFromDir); 
+        } else if (entry.isFile) {
+          droppedFiles.push(entry); 
+        }
       }
     }
-
-    setFiles(droppedFiles);
+  
+    const filePromises = droppedFiles.map((entry) => {
+      return new Promise((resolve) => {
+        entry.file((file) => resolve(file));
+      });
+    });
+  
+    const filesArray = await Promise.all(filePromises);
+    setFiles(filesArray);
     setShowUploadButton(false);
   };
+  
 
   console.log(files);
 
