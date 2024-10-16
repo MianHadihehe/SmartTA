@@ -12,9 +12,9 @@ const TeacherGradesPage = () => {
 
   // Mock initial grades provided by AI
   const [grades, setGrades] = useState([
-    { rollNumber: '123', grade: 'B', feedback: 'Good, but can improve.' },
-    { rollNumber: '124', grade: 'A', feedback: 'Excellent work!' },
-    { rollNumber: '125', grade: 'C+', feedback: 'Needs more effort.' },
+    { rollNumber: '21L-6077', grade: 'B', feedback: 'Good, but can improve.' },
+    { rollNumber: '21L-6285', grade: 'A', feedback: 'Excellent work!' },
+    { rollNumber: '21L-1890', grade: 'C+', feedback: 'Needs more effort.' },
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,19 +38,14 @@ const TeacherGradesPage = () => {
     setIsModalOpen(false);
   };
 
-  // Accept all grades
   const handleAcceptAll = () => {
     alert('All grades accepted!');
-    // Implement your logic for accepting all grades
   };
 
-  // Retry AI grading
   const handleRetry = () => {
     alert('Retrying AI-based grading...');
-    // Implement retry logic here
   };
 
-  // Logout functionality
   const handleLogout = () => {
     navigate('/');
   };
@@ -101,7 +96,6 @@ const TeacherGradesPage = () => {
         <button className="retry-btn" onClick={handleRetry}>Retry Evaluation</button>
       </div>
 
-      {/* Modal for editing grades */}
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">

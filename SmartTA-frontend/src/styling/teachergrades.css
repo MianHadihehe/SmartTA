@@ -181,12 +181,12 @@ body {
   }
   
   .save-btn {
-    background-color: #5cb85c;
+    background-color: rgb(234,67,89);
     color: white;
   }
   
   .close-btn {
-    background-color: #d9534f;
+    background-color: #333;
     color: white;
   }
   

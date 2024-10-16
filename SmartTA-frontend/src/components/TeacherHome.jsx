@@ -83,6 +83,9 @@ const TeacherHome = () => {
     setShowUploadButton(false);
   };
   
+  const handleEvaluate=()=>{
+    navigate('/teacher-grades');
+  }
 
   console.log(files);
 
@@ -122,11 +125,11 @@ const TeacherHome = () => {
         </div>
       </div>
       
-      <ul>
+      {/* <ul>
         {files.map((file, index) => (
           <li key={index}>{file.name}</li>
         ))}
-      </ul>
+      </ul> */}
     
       <div
         className={`drag-drop-area ${isDragging ? 'dragging' : ''}`}
@@ -155,7 +158,7 @@ const TeacherHome = () => {
       </div>
 
       <div className="submit-cont">
-        <button className='btn-submit' type='submit'>Evaluate</button>
+        <button className='btn-submit' onClick={handleEvaluate} type='submit'>Evaluate</button>
       </div>
     </div>
   );
