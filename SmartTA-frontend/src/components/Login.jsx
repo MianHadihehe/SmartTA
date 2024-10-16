@@ -55,7 +55,7 @@ const Login = () => {
     <div className="login-main-cont">
       <div className="robo-cont">
         <iframe
-          // src={splineRoboURL}
+          src={splineRoboURL}
           id='robot'
           style={{ width: "100%", height: "100%" }}
         ></iframe>
