@@ -1,7 +1,8 @@
-const express = require('express');
-const { register } = require('../controllers/SignUpController'); 
+const express = require("express");
+const { register } = require("../controllers/SignUpController"); // Use require for CommonJS
+
 const router = express.Router();
 
-router.post('/', register);
+router.post("/", register);
 
-module.exports = router;
+module.exports = router; // Use module.exports for CommonJS

@@ -1,22 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styling/teacherhome.css'; 
-import { useState } from 'react';
 import uploadIcon from '../assets/upload_icon.png';
 import walkingRobo from '../assets/walking-robo.gif';
 
 const TeacherHome = () => {
-
   const location = useLocation();
   const navigate = useNavigate(); 
-
   const { username } = location.state || {}; 
-
-  console.log('Username:', username); 
-
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState([]);
-  const [showUploadButton, setShowUploadButton] = useState(true);
+  const [uploadStatus, setUploadStatus] = useState(null); // Tracks upload success or error
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -27,85 +21,71 @@ const TeacherHome = () => {
     setIsDragging(false);
   };
 
-  const handleDrop = async (e) => {
+  const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
-  
-    const items = e.dataTransfer.items;
-    const droppedFiles = [];
-  
-    const readDirectory = async (entry) => {
-      return new Promise((resolve, reject) => {
-        const dirReader = entry.createReader();
-        const entries = [];
-  
-        const readEntries = () => {
-          dirReader.readEntries(async (results) => {
-            if (!results.length) {
-              resolve(entries); 
-            } else {
-              for (const result of results) {
-                if (result.isDirectory) {
-                  entries.push(...await readDirectory(result)); 
-                } else {
-                  entries.push(result); 
-                }
-              }
-              readEntries(); 
-            }
-          }, reject);
-        };
-  
-        readEntries();
-      });
-    };
-  
-    for (let i = 0; i < items.length; i++) {
-      const entry = items[i].webkitGetAsEntry();
-      if (entry) {
-        if (entry.isDirectory) {
-          const filesFromDir = await readDirectory(entry);
-          droppedFiles.push(...filesFromDir); 
-        } else if (entry.isFile) {
-          droppedFiles.push(entry); 
-        }
-      }
-    }
-  
-    const filePromises = droppedFiles.map((entry) => {
-      return new Promise((resolve) => {
-        entry.file((file) => resolve(file));
-      });
-    });
-  
-    const filesArray = await Promise.all(filePromises);
-    setFiles(filesArray);
-    setShowUploadButton(false);
-  };
-  
-  const handleEvaluate=()=>{
-    navigate('/teacher-grades');
-  }
 
-  console.log(files);
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    setFiles(droppedFiles);
+  };
+
+  const uploadFiles = async () => {
+    if (files.length === 0) {
+      setUploadStatus('No files to upload.');
+      return;
+    }
+
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('file', file); // Ensure the key matches the backend expectation
+    });
+
+    try {
+      const response = await fetch('http://localhost:8080/api/upload/extract-text', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setUploadStatus('Files uploaded successfully!');
+        console.log('Files uploaded:', result);
+      } else {
+        setUploadStatus('File upload failed.');
+        console.error('Failed response:', await response.text());
+      }
+    } catch (error) {
+      setUploadStatus('Error uploading files.');
+      console.error('Error:', error);
+    }
+  };
+
+  const handleEvaluate = () => {
+    navigate('/teacher-grades');
+  };
 
   const handleFileSelect = (e) => {
-    const selectedFiles = e.target.files;
-    const selectedFilesArray = Array.from(selectedFiles);
-
-    setFiles(selectedFilesArray);
-    setShowUploadButton(false); 
+    const selectedFiles = Array.from(e.target.files);
+    setFiles(selectedFiles);
   };
 
   const renderFileList = () => {
     if (files.length === 0) {
-      return <p>No folder dropped yet. Drag a folder here.</p>;
+      return <p>No files selected yet. Drag and drop files here or use the file picker.</p>;
     }
+
+    return (
+      <ul>
+        {files.map((file, index) => (
+          <li key={index}>{file.name}</li>
+        ))}
+      </ul>
+    );
   };
 
-  const handleLogout= () =>{
+  const handleLogout = () => {
     navigate('/');
-  }
+  };
 
   return (
     <div className="main-teacher-home">
@@ -125,12 +105,6 @@ const TeacherHome = () => {
         </div>
       </div>
       
-      {/* <ul>
-        {files.map((file, index) => (
-          <li key={index}>{file.name}</li>
-        ))}
-      </ul> */}
-    
       <div
         className={`drag-drop-area ${isDragging ? 'dragging' : ''}`}
         onDragOver={handleDragOver}
@@ -141,25 +115,25 @@ const TeacherHome = () => {
           <img src={uploadIcon} alt="Upload icon" />
         </div>
         <div className="drag-drop-message">
-          {isDragging ? 'Release to drop the folder' : 'Drag and drop a folder here'}
+          {isDragging ? 'Release to drop files' : 'Drag and drop files here'}
         </div>
         {renderFileList()}
-        {showUploadButton && (
-          <div className="file-upload-btn-cont">
-            <input
-              type="file"
-              directory=""
-              webkitdirectory="" 
-              onChange={handleFileSelect}
-              className="file-upload-input"
-            />
-          </div>
-        )}
+        <div className="file-upload-btn-cont">
+          <input
+            type="file"
+            multiple
+            onChange={handleFileSelect}
+            className="file-upload-input"
+          />
+        </div>
       </div>
 
       <div className="submit-cont">
+        <button className='btn-submit' onClick={uploadFiles} type='button'>Upload Files</button>
         <button className='btn-submit' onClick={handleEvaluate} type='submit'>Evaluate</button>
       </div>
+
+      {uploadStatus && <div className="upload-status">{uploadStatus}</div>}
     </div>
   );
 };
