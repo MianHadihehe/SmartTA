@@ -1,111 +1,134 @@
+
+
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styling/teacherhome.css'; 
 import uploadIcon from '../assets/upload_icon.png';
 import walkingRobo from '../assets/walking-robo.gif';
+import loadingSpinner from '../assets/loading-spinner.gif'; // Add a spinner image or animation
 
 const TeacherHome = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const { username } = location.state || {}; 
+  const [isDragging, setIsDragging] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [uploadStatus, setUploadStatus] = useState(null);
+  const [uploadStatusCode, setUploadStatusCode] = useState(0);
+  const [isLoading, setIsLoading] = useState(false); 
+  const [uploadedData, setUploadedData] = useState(null);
 
-  const [questionsFile, setQuestionsFile] = useState(null); // Questions file
-  const [studentFile, setStudentFile] = useState(null); // Student file
-  const [questionsText, setQuestionsText] = useState(''); // OCR text for questions
-  const [studentText, setStudentText] = useState(''); // OCR text for student response
-  const [uploadStatus, setUploadStatus] = useState(null); // Tracks upload success or error
-  const [evaluationResult, setEvaluationResult] = useState(''); // Stores evaluation result
-  const [loadingQuestionsOCR, setLoadingQuestionsOCR] = useState(false); // Spinner for Questions OCR
-  const [loadingStudentOCR, setLoadingStudentOCR] = useState(false); // Spinner for Student OCR
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
 
-  // Function to upload a file and extract OCR text
-  const uploadFileForOCR = async (file, setTextCallback, setLoadingCallback, fileType) => {
-    if (!file) {
-      setUploadStatus("No file selected.");
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    setFiles(droppedFiles);
+  };
+
+  const uploadFiles = async () => {
+    if (files.length === 0) {
+      showUploadStatus('No Files to Upload.');
       return;
     }
 
-    setLoadingCallback(true); // Show spinner
+    setIsLoading(true);
+    setUploadStatus(null);
+
     const formData = new FormData();
-    formData.append("file", file);
+    files.forEach(file => {
+      formData.append('file', file); 
+    });
 
     try {
-      const response = await fetch("http://localhost:8080/api/upload/extract-text", {
-        method: "POST",
+      const response = await fetch('http://localhost:8080/api/upload/extract-text', {
+        method: 'POST',
         body: formData,
       });
 
       if (response.ok) {
         const result = await response.json();
-        setTextCallback(result.text); // Save OCR text using the provided callback
-        console.log(`Extracted text (${fileType}):`, result.text);
-        setUploadStatus(`${fileType} OCR completed successfully.`);
+        setUploadedData(result); 
+        showUploadStatus('Files Uploaded Successfully!');
+        console.log('Files uploaded:', result);
+        setUploadStatusCode(1);
       } else {
-        setUploadStatus(`${fileType} OCR failed. Please try again.`);
-        console.error("OCR failed:", await response.text());
+        showUploadStatus('File Upload Failed.');
+        console.error('Failed response:', await response.text());
       }
     } catch (error) {
-      setUploadStatus("Error during OCR process.");
-      console.error("OCR Error:", error);
+      showUploadStatus('Error Uploading Files.');
+      console.error('Error:', error);
     } finally {
-      setLoadingCallback(false); // Hide spinner
+      setIsLoading(false);
     }
   };
 
-  // Handle OCR for Questions File
-  const handleQuestionsUpload = async () => {
-    if (!questionsFile) {
-      setUploadStatus("Please upload a questions file.");
-      return;
-    }
-    setUploadStatus("Processing Questions File...");
-    await uploadFileForOCR(questionsFile, setQuestionsText, setLoadingQuestionsOCR, "Questions File");
+  const showUploadStatus = (message) => {
+    setUploadStatus(message); // Set the message
+    setTimeout(() => {
+      setUploadStatus(null); // Clear the message after 3 seconds
+    }, 3000); // 3000 milliseconds = 3 seconds
   };
 
-  // Handle OCR for Student File
-  const handleStudentUpload = async () => {
-    if (!studentFile) {
-      setUploadStatus("Please upload a student file.");
-      return;
-    }
-    setUploadStatus("Processing Student File...");
-    await uploadFileForOCR(studentFile, setStudentText, setLoadingStudentOCR, "Student File");
-  };
-
-  // Handle Evaluation
   const handleEvaluate = async () => {
-    if (!questionsText || !studentText) {
-      setEvaluationResult("Please ensure both files are uploaded and processed.");
+    if (!uploadedData) {
+      showUploadStatus('No uploaded data to evaluate.');
       return;
     }
 
-    const combinedText = `Questions:\n${questionsText}\n\nStudent Response:\n${studentText}`;
-    console.log("Sending combined text for evaluation:", combinedText);
-
+    setIsLoading(true);
+console.log("pressed button");
     try {
-      const response = await fetch("http://localhost:8080/api/grade/grade", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ocrText: combinedText }),
+      const response = await fetch('http://localhost:8080/api/evaluate/grade', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: uploadedData }), 
       });
 
       if (response.ok) {
         const result = await response.json();
-        setEvaluationResult(result.gradedText); // Save GPT-4 result
-        console.log("Evaluation Result:", result.gradedText);
-
-        // Redirect to the grades page after evaluation
-        navigate('/teacher-grades');
+        console.log('Evaluation result:', result);
+        navigate('/teacher-grades', { state: { result } }); 
       } else {
-        setEvaluationResult("Evaluation failed. Please try again.");
-        console.error("Evaluation failed:", await response.text());
+        console.error('Evaluation failed:', await response.text());
+        showUploadStatus('Evaluation failed.');
       }
     } catch (error) {
-      setEvaluationResult("An error occurred during evaluation.");
-      console.error("Evaluation Error:", error);
+      console.error('Error during evaluation:', error);
+      showUploadStatus('Error during evaluation.');
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const handleFileSelect = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setFiles(selectedFiles);
+  };
+
+  const renderFileList = () => {
+    if (files.length === 0) {
+      return <p>No files selected yet. Drag and drop files here or use the file picker.</p>;
+    }
+
+    return (
+      <ul>
+        {files.map((file, index) => (
+          <li key={index}>{file.name}</li>
+        ))}
+      </ul>
+    );
   };
 
   const handleLogout = () => {
@@ -113,54 +136,87 @@ const TeacherHome = () => {
   };
 
   return (
-    <div className="main-teacher-home">
+    <div className={`main-teacher-home ${isLoading ? 'loading' : ''}`}> {/* Add a class for loading state */}
       <div className="teacher-lo-btn-cont">
-        <button className="teacher-lo-btn" onClick={handleLogout}>Logout</button>
+        <button 
+          className='teacher-lo-btn' 
+          onClick={handleLogout} 
+          disabled={isLoading} // Disable when loading
+        >
+          Logout
+        </button>
       </div>
-      <div className="logo">
+      <div className="logo"> 
         Smart<span style={{ color: "rgb(234,67,89)" }}>TA</span>
       </div>
       <div className="msg-robo-cont">
-        <div className="welcome-msg">
+        <div className="welcome-msg"> 
           Welcome, Prof. {username}
         </div>
+
         <div className="walking-robo">
-          <img className="walkingroboicon" src={walkingRobo} alt="Walking Robo" />
+          <img className='walkingroboicon' src={walkingRobo} alt="" />
+        </div>
+      </div>
+      
+      <div
+        className={`drag-drop-area ${isDragging ? 'dragging' : ''}`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <div className="upload-icon">
+          <img src={uploadIcon} alt="Upload icon" />
+        </div>
+        <div className="drag-drop-message">
+          {isDragging ? 'Release to drop files' : 'Drag and drop files here'}
+        </div>
+        {renderFileList()}
+        <div className="file-upload-btn-cont">
+          <input
+            type="file"
+            multiple
+            onChange={handleFileSelect}
+            className="file-upload-input"
+            disabled={isLoading} // Disable file selection when loading
+          />
         </div>
       </div>
 
-      {/* Questions File Upload */}
-      <div className="drag-drop-area">
-        <h3>Upload Questions File</h3>
-        <input type="file" onChange={(e) => setQuestionsFile(e.target.files[0])} />
-        <button className="btn-submit" onClick={handleQuestionsUpload}>
-          {loadingQuestionsOCR ? (
-            <span className="spinner"></span> // Spinner for Questions OCR
-          ) : (
-            "OCR Questions"
-          )}
-        </button>
-      </div>
-
-      {/* Student File Upload */}
-      <div className="drag-drop-area">
-        <h3>Upload Student File</h3>
-        <input type="file" onChange={(e) => setStudentFile(e.target.files[0])} />
-        <button className="btn-submit" onClick={handleStudentUpload}>
-          {loadingStudentOCR ? (
-            <span className="spinner"></span> // Spinner for Student OCR
-          ) : (
-            "OCR Student Response"
-          )}
-        </button>
-      </div>
-
-      {/* Evaluate */}
       <div className="submit-cont">
-        <button className="btn-submit" onClick={handleEvaluate}>Evaluate</button>
+        <button 
+          style={{ display: uploadStatusCode === 0 ? 'block' : 'none' }}
+          className='btn-submit' 
+          onClick={uploadFiles} 
+          type='button' 
+          disabled={isLoading} // Disable when loading
+        >
+          Upload Files
+        </button>
+        <button 
+          className='btn-submit' 
+          onClick={handleEvaluate} 
+          type='submit' 
+          disabled={isLoading} // Disable when loading
+        >
+          Evaluate
+        </button>
       </div>
 
-      
+      {isLoading && (
+        <div className="loading-indicator">
+          <img src={loadingSpinner} alt="Loading..." />
+            Loading...
+        </div>
+         )} 
+      {uploadStatus && (
+  <div
+    className={`upload-status ${uploadStatus.includes('successfully') ? 'success' : 'error'}`}
+  >
+    {uploadStatus}
+  </div>
+)}
+
     </div>
   );
 };

@@ -7,14 +7,29 @@ import walkingRobo from '../assets/walking-robo.gif';
 const TeacherGradesPage = () => {
 
   const location = useLocation();
+
+  const result = location.state?.result;
+  console.log(result);
+  const gradedFeedback = result.gradedText;
+  const resultArray = gradedFeedback.split("\n");
+
+  const grade = resultArray.find(line => line.startsWith("Grade:"))?.split(": ")[1];
+  const feedback = resultArray.find(line => line.startsWith("Feedback:"))?.split(": ")[1];
+  const rollID = resultArray.find(line => line.startsWith("Rollnumber:"))?.split(": ")[1];
+
+
+  console.log("Grade:", grade);
+  console.log("Feedback:", feedback);
+  console.log("Roll Number:", rollID);
+
   const navigate = useNavigate(); 
   const { username } = location.state || {}; // Receive username from navigation state
 
   // Mock initial grades provided by AI
   const [grades, setGrades] = useState([
-    { rollNumber: '21L-6077', grade: 'B', feedback: 'Good, but can improve.' },
-    { rollNumber: '21L-6285', grade: 'A', feedback: 'Excellent work!' },
-    { rollNumber: '21L-1890', grade: 'C+', feedback: 'Needs more effort.' },
+    { rollNumber: rollID, grade: grade, feedback: feedback },
+    // { rollNumber: '21L-6285', grade: 'A', feedback: 'Excellent work!' },
+    // { rollNumber: '21L-1890', grade: 'C+', feedback: 'Needs more effort.' },
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);

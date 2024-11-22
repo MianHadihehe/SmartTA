@@ -15,7 +15,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const gradeTextWithGPT = async (ocrText) => {
   try {
     console.log("Sending OCR text to GPT-3.5 for grading...");
-    console.log(`OCR Text Length: ${ocrText.length}`); // Debug log for input text length
+    // console.log(`OCR Text Length: ${ocrText.length}`); 
 
     const response = await axios.post(
       OPENAI_API_URL,
@@ -24,11 +24,11 @@ const gradeTextWithGPT = async (ocrText) => {
         messages: [
           {
             role: "system",
-            content: "You are a teaching assistant responsible for grading student assignments.",
+            content: "You are a teaching assistant responsible for grading student assignments according to the questions.",
           },
           {
             role: "user",
-            content: `Please grade the following text and provide feedback:\n\n${ocrText}`,
+            content: `Please grade the following text and provide feedback:\n\n${ocrText}. Also extract the rollnumber from the text and give grade,rollnumber and feedback all separated by a semi-colon`,
           },
         ],
       },
@@ -47,12 +47,12 @@ const gradeTextWithGPT = async (ocrText) => {
       throw new Error("Unexpected response structure from GPT-3.5.");
     }
 
-    return response.data.choices[0].message.content; // Extract graded text from GPT-3.5 response
+    return response.data.choices[0].message.content; 
   } catch (error) {
     console.error("Error sending text to GPT-3.5:", error.message);
 
     if (error.response) {
-      console.error("OpenAI Response Error Data:", error.response.data); // Detailed log for debugging
+      console.error("OpenAI Response Error Data:", error.response.data); 
     }
 
     if (error.code === "ENOTFOUND" || error.code === "ECONNREFUSED") {
@@ -70,11 +70,11 @@ const gradeOCRText = async (ocrText) => {
   try {
     console.log("Grading OCR text...");
 
-    if (!ocrText || ocrText.trim() === "") {
+    if (!ocrText) {
       throw new Error("Provided OCR text is empty or invalid.");
     }
 
-    console.log("Text to grade:", ocrText.substring(0, 100)); // Log first 100 characters for debugging
+    // console.log("Text to grade:", ocrText.substring(0, 100)); // Log first 100 characters for debugging
 
     // Get graded result from GPT-3.5
     const gradedText = await gradeTextWithGPT(ocrText);

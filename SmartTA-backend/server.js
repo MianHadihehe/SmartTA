@@ -20,7 +20,7 @@ app.use(cors());
 app.use("/api/login", loginRoute);
 app.use("/api/signup", signupRoute);
 app.use("/api/upload", uploadRoute);
-app.use("/api/grade", gradeRoute);
+app.use("/api/evaluate", gradeRoute);
 
 
 // MongoDB Connection
