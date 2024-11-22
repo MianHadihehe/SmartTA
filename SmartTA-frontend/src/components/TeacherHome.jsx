@@ -11,6 +11,8 @@ const TeacherHome = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState([]);
   const [uploadStatus, setUploadStatus] = useState(null); // Tracks upload success or error
+  const [evaluationResult, setEvaluationResult] = useState(''); // Stores evaluation result
+  const [extractedText, setExtractedText] = useState(''); // Stores OCR text
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -31,37 +33,67 @@ const TeacherHome = () => {
 
   const uploadFiles = async () => {
     if (files.length === 0) {
-      setUploadStatus('No files to upload.');
+      setUploadStatus("No files to upload.");
       return;
     }
-
+  
     const formData = new FormData();
-    files.forEach(file => {
-      formData.append('file', file); // Ensure the key matches the backend expectation
+    files.forEach((file) => {
+      formData.append("file", file); // Ensure the key matches the backend expectation
     });
-
+  
     try {
-      const response = await fetch('http://localhost:8080/api/upload/extract-text', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/api/upload/extract-text", {
+        method: "POST",
         body: formData,
       });
-
+  
       if (response.ok) {
         const result = await response.json();
-        setUploadStatus('Files uploaded successfully!');
-        console.log('Files uploaded:', result);
+        setUploadStatus("Files uploaded successfully!");
+        setExtractedText(result.text); // Save the extracted text to the state
+        console.log("Extracted text:", result.text);
       } else {
-        setUploadStatus('File upload failed.');
-        console.error('Failed response:', await response.text());
+        setUploadStatus("File upload failed.");
+        console.error("Failed response:", await response.text());
       }
     } catch (error) {
-      setUploadStatus('Error uploading files.');
-      console.error('Error:', error);
+      setUploadStatus("Error uploading files.");
+      console.error("Error:", error);
     }
   };
 
-  const handleEvaluate = () => {
-    navigate('/teacher-grades');
+  const handleEvaluate = async () => {
+    try {
+      // Ensure the OCR text is available
+      if (!extractedText || extractedText.trim() === "") {
+        setEvaluationResult("No OCR text available for evaluation. Please upload and extract text first.");
+        return;
+      }
+  
+      console.log("Sending extracted OCR text for grading:", extractedText);
+  
+      // Make a POST request to the grading API
+      const response = await fetch("http://localhost:8080/api/grade/grade", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ocrText: extractedText }), // Use the actual extracted text
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        setEvaluationResult(result.gradedText); // Update the state with the graded result
+        console.log("Grading result:", result.gradedText);
+      } else {
+        console.error("Grading failed:", await response.text());
+        setEvaluationResult("Grading failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during grading:", error);
+      setEvaluationResult("An error occurred while grading. Please try again.");
+    }
   };
 
   const handleFileSelect = (e) => {
@@ -134,6 +166,22 @@ const TeacherHome = () => {
       </div>
 
       {uploadStatus && <div className="upload-status">{uploadStatus}</div>}
+
+      {/* Display OCR Text */}
+      {extractedText && (
+        <div className="ocr-text">
+          <h3>Extracted OCR Text:</h3>
+          <pre>{extractedText}</pre> {/* Preformatted for better readability */}
+        </div>
+      )}
+
+      {/* Display Evaluation Result */}
+      {evaluationResult && (
+        <div className="evaluation-result">
+          <h3>Evaluation Result:</h3>
+          <p>{evaluationResult}</p>
+        </div>
+      )}
     </div>
   );
 };

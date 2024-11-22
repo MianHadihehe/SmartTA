@@ -5,6 +5,8 @@ const dotenv = require("dotenv"); // For environment variables
 const loginRoute = require("./routes/LoginRouter"); // No .js extension needed
 const signupRoute = require("./routes/SignUpRouter"); // No .js extension needed
 const uploadRoute = require("./routes/UploadRouter"); // No .js extension needed
+const gradeRoute = require("./routes/GradeRouter");
+
 
 dotenv.config(); // Initialize environment variables
 
@@ -18,6 +20,8 @@ app.use(cors());
 app.use("/api/login", loginRoute);
 app.use("/api/signup", signupRoute);
 app.use("/api/upload", uploadRoute);
+app.use("/api/grade", gradeRoute);
+
 
 // MongoDB Connection
 mongoose
