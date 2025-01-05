@@ -7,7 +7,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 // Handwriting OCR API Details
-const HANDWRITING_OCR_BASE_URL = "https://www.handwritingocr.com/api/v1";
+const HANDWRITING_OCR_BASE_URL = process.env.HANDWRITING_OCR_BASE_URL;
+
+console.log(HANDWRITING_OCR_BASE_URL);
 const HANDWRITING_OCR_AUTH_KEY = `Bearer ${process.env.HANDWRITING_OCR_API_KEY}`;
 
 // Upload the entire PDF to Handwriting OCR API
@@ -37,7 +39,7 @@ const uploadPdfToOCR = async (filePath) => {
   }
 };
 
-const getExtractedText = async (documentId, maxRetries = 10, delay = 5000) => {
+const getExtractedText = async (documentId, format = "txt", maxRetries = 10, delay = 5000) => {
   try {
     let retries = 0;
 
@@ -49,38 +51,25 @@ const getExtractedText = async (documentId, maxRetries = 10, delay = 5000) => {
         `${HANDWRITING_OCR_BASE_URL}/documents/${documentId}`,
         {
           headers: {
-            Authorization: `Bearer ${process.env.HANDWRITING_OCR_API_KEY}`,
-            "Content-Type": "application/json",
+            Authorization: HANDWRITING_OCR_AUTH_KEY,
             Accept: "application/json",
           },
         }
       );
 
-      if (response.data.status === "processed" && response.data.results) {
+      // Check if the document is processed
+      if (response.data.status === "processed") {
         console.log("Document processed. Fetching extracted text...");
 
-        // Validate results.txt
-        if (!response.data.results.txt) {
-          throw new Error("Processed results URL is missing.");
-        }
-
-        // Extract token from the results URL
-        const tokenMatch = response.data.results.txt.match(/download\/([^/]+)\//);
-        if (!tokenMatch || tokenMatch.length < 2) {
-          throw new Error("Failed to extract download token from results URL.");
-        }
-        const token = tokenMatch[1];
-
-        // Construct the download URL
-        const action = "transcribe";
-        const format = "txt";
-        const downloadUrl = `${HANDWRITING_OCR_BASE_URL}/documents/${documentId}/download/${token}/${action}.${format}`;
+        // Construct the download URL with the specified format
+        const downloadUrl = `${HANDWRITING_OCR_BASE_URL}/documents/${documentId}.${format}`;
         console.log("Constructed Download URL:", downloadUrl);
 
         // Download the extracted text
         const textResponse = await axios.get(downloadUrl, {
           headers: {
-            Authorization: `Bearer ${process.env.HANDWRITING_OCR_API_KEY}`,
+            Authorization: HANDWRITING_OCR_AUTH_KEY,
+            Accept: "application/json", // Ensure appropriate headers are set
           },
         });
 
@@ -106,38 +95,40 @@ const getExtractedText = async (documentId, maxRetries = 10, delay = 5000) => {
 };
 
 
+
+
 // Extract text from a PDF file
-const extractTextFromPdf = async (req, res, filename) => {
-  try {
-    const filePath = path.join(__dirname, "../uploads", filename);
-    const ext = path.extname(filename).toLowerCase();
+// const extractTextFromPdf = async (req, res, filename) => {
+//   try {
+//     const filePath = path.join(__dirname, "../uploads", filename);
+//     const ext = path.extname(filename).toLowerCase();
 
-    if (ext !== ".pdf") {
-      throw new Error("Only PDF files are supported for this method.");
-    }
+//     if (ext !== ".pdf") {
+//       throw new Error("Only PDF files are supported for this method.");
+//     }
 
-    console.log("Processing PDF file:", filePath);
+//     console.log("Processing PDF file:", filePath);
 
-    // Upload PDF to Handwriting OCR API
-    const documentId = await uploadPdfToOCR(filePath);
-    console.log(`Uploaded PDF, Document ID: ${documentId}`);
+//     // Upload PDF to Handwriting OCR API
+//     const documentId = await uploadPdfToOCR(filePath);
+//     console.log(`Uploaded PDF, Document ID: ${documentId}`);
 
-    // Retrieve extracted text from Handwriting OCR API
-    const extractedText = await getExtractedText(documentId);
-    console.log("Extracted text from PDF:", extractedText);
+//     // Retrieve extracted text from Handwriting OCR API
+//     const extractedText = await getExtractedText(documentId);
+//     console.log("Extracted text from PDF:", extractedText);
 
-    // Send extracted text in response
-    res.status(200).json({ text: extractedText });
+//     // Send extracted text in response
+//     res.status(200).json({ text: extractedText });
 
-    console.log("Extraction complete. Response sent.");
-  } catch (error) {
-    console.error("Error during text extraction:", error.message);
-    res.status(500).json({ error: error.message || "An error occurred" });
-  }
-};
+//     console.log("Extraction complete. Response sent.");
+//   } catch (error) {
+//     console.error("Error during text extraction:", error.message);
+//     res.status(500).json({ error: error.message || "An error occurred" });
+//   }
+// };
 
 module.exports = {
   uploadPdfToOCR,
   getExtractedText,
-  extractTextFromPdf,
+  // extractTextFromPdf,
 };

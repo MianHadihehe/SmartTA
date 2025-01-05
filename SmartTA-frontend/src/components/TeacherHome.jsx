@@ -60,7 +60,7 @@ const TeacherHome = () => {
       if (response.ok) {
         const result = await response.json();
         setUploadedData(result); 
-        // rollNumberRender();
+        rollNumberRender();
         showUploadStatus('Files Uploaded Successfully!', true);
         console.log('Files uploaded:', result);
         setUploadStatusCode(1);
