@@ -37,7 +37,7 @@ const Login = () => {
 
 
         if (role === 'teacher') {
-          navigate('/teacher-home', { state: { username } });
+          navigate('/submit-question', { state: { username } });
         } else if (role === 'student') {
           navigate('/student-home', { state: { username } });
         } else {

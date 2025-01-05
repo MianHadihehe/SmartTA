@@ -8,6 +8,7 @@ router.post("/grade", async (req, res) => {
   try {
     console.log("in router, body: "+req.body);
     const { data } = req.body; // Extract the OCR text from the request body
+    const { questions } = req.body; // Extract the OCR text from the request body
     // console.log(data);
     // Validate that OCR text is provided
     // if (!data || data.trim() === "") {
@@ -16,9 +17,10 @@ router.post("/grade", async (req, res) => {
     // }
 
     console.log("Received OCR text for grading:", data);
+    console.log("Received OCR text of questions:", questions);
 
     // Call the controller function to process the text
-    const gradedText = await gradeOCRText(data);
+    const gradedText = await gradeOCRText(data, questions);
 
     // Check if gradedText is valid
     if (!gradedText) {

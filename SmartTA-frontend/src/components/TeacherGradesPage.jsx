@@ -9,25 +9,31 @@ const TeacherGradesPage = () => {
   const location = useLocation();
 
   const result = location.state?.result;
+  const rollNumber = location.state?.rollNumber;
   console.log(result);
   const gradedFeedback = result.gradedText;
-  const resultArray = gradedFeedback.split("\n");
+  const resultArray = gradedFeedback.split(";");
+  const initial_grade= resultArray[0];
+  const initial_feedback= resultArray[1];
 
-  const grade = resultArray.find(line => line.startsWith("Grade:"))?.split(": ")[1];
-  const feedback = resultArray.find(line => line.startsWith("Feedback:"))?.split(": ")[1];
-  const rollID = resultArray.find(line => line.startsWith("Rollnumber:"))?.split(": ")[1];
+  console.log("initial_grade: ",initial_grade);
+  console.log("initial_feedback: ",initial_feedback);
+
+  const grade = initial_grade.substring(7,initial_grade.length+1);
+  const feedback = initial_feedback.substring(10,initial_feedback.length+1);
+  // const rollID = resultArray.find(line => line.startsWith("Rollnumber:"))?.split(": ")[1];
 
 
   console.log("Grade:", grade);
   console.log("Feedback:", feedback);
-  console.log("Roll Number:", rollID);
+  console.log("Roll Number:", rollNumber);
 
   const navigate = useNavigate(); 
   const { username } = location.state || {}; // Receive username from navigation state
 
   // Mock initial grades provided by AI
   const [grades, setGrades] = useState([
-    { rollNumber: rollID, grade: grade, feedback: feedback },
+    { rollNumber: rollNumber, grade: grade, feedback: feedback },
     // { rollNumber: '21L-6285', grade: 'A', feedback: 'Excellent work!' },
     // { rollNumber: '21L-1890', grade: 'C+', feedback: 'Needs more effort.' },
   ]);

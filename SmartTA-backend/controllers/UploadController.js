@@ -9,7 +9,7 @@ dotenv.config();
 // Handwriting OCR API Details
 const HANDWRITING_OCR_BASE_URL = process.env.HANDWRITING_OCR_BASE_URL;
 
-console.log(HANDWRITING_OCR_BASE_URL);
+// console.log(HANDWRITING_OCR_BASE_URL);
 const HANDWRITING_OCR_AUTH_KEY = `Bearer ${process.env.HANDWRITING_OCR_API_KEY}`;
 
 // Upload the entire PDF to Handwriting OCR API

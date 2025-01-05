@@ -12,15 +12,26 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
  * @param {string} ocrText - The text extracted from the OCR API.
  * @returns {Promise<string>} - The response text (graded result) from GPT-3.5.
  */
-const gradeTextWithGPT = async (ocrText) => {
+ const gradeTextWithGPT = async (ocrText, questions) => {
   try {
     console.log("Sending OCR text to GPT-3.5 for grading...");
-    // console.log(`OCR Text Length: ${ocrText.length}`); 
+
+    // Ensure ocrText and questions are strings
+    if (typeof ocrText !== "string") {
+      ocrText = JSON.stringify(ocrText); // Convert to string if it's an object
+    }
+
+    if (typeof questions !== "string") {
+      questions = JSON.stringify(questions); // Convert to string if it's an object
+    }
+
+    console.log("GC, OCR text of answer:", ocrText);
+    console.log("GC, OCR text of question:", questions);
 
     const response = await axios.post(
       OPENAI_API_URL,
       {
-        model: "gpt-3.5-turbo",
+        model: "gpt-4-0613",
         messages: [
           {
             role: "system",
@@ -28,7 +39,7 @@ const gradeTextWithGPT = async (ocrText) => {
           },
           {
             role: "user",
-            content: `Please grade the following text and provide feedback:\n\n${ocrText}. Suppose questions yourself and also provide feedback for improved. Separate grade and feedback with semi-colon`,
+            content: `Suppose you are a teaching assistant trying to replicate grading assignments of an actual human teaching assistant. These are the questions to grade: ${questions}.Ensure you are grading on the basis of the marks given in the question paper. Please grade the following student response and provide feedback and total marks.\n\n${ocrText}. Separate grade and feedback with a semicolon.`,
           },
         ],
       },
@@ -47,12 +58,12 @@ const gradeTextWithGPT = async (ocrText) => {
       throw new Error("Unexpected response structure from GPT-3.5.");
     }
 
-    return response.data.choices[0].message.content; 
+    return response.data.choices[0].message.content;
   } catch (error) {
     console.error("Error sending text to GPT-3.5:", error.message);
 
     if (error.response) {
-      console.error("OpenAI Response Error Data:", error.response.data); 
+      console.error("OpenAI Response Error Data:", error.response.data);
     }
 
     if (error.code === "ENOTFOUND" || error.code === "ECONNREFUSED") {
@@ -63,10 +74,11 @@ const gradeTextWithGPT = async (ocrText) => {
   }
 };
 
+
 /**
  * Controller to handle grading via GPT-3.5.
  */
-const gradeOCRText = async (ocrText) => {
+const gradeOCRText = async (ocrText, questions) => {
   try {
     console.log("Grading OCR text...");
 
@@ -76,10 +88,10 @@ const gradeOCRText = async (ocrText) => {
 
     // console.log("Text to grade:", ocrText.substring(0, 100)); // Log first 100 characters for debugging
 
-    // Get graded result from GPT-3.5
-    const gradedText = await gradeTextWithGPT(ocrText);
+    // Get graded result from GPT
+    const gradedText = await gradeTextWithGPT(ocrText, questions);
 
-    console.log("Graded text received from GPT-3.5:", gradedText.substring(0, 100)); // Log first 100 characters
+    console.log("Graded text received from GPT-4:", gradedText.substring(0, 100)); // Log first 100 characters
     return gradedText; // Return the graded text, but do not send a response here
   } catch (error) {
     console.error("Error grading OCR text:", error.message);

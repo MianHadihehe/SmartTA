@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styling/teacherhome.css'; 
@@ -7,27 +5,22 @@ import uploadIcon from '../assets/upload_icon.png';
 import walkingRobo from '../assets/walking-robo.gif';
 import loadingSpinner from '../assets/loading-spinner.gif'; // Add a spinner image or animation
 
-const TeacherHome = () => {
+const SubmitQuestionPaper = () => {
   const location = useLocation();
-  const navigate = useNavigate(); 
-  const { username } = location.state || {}; 
+  const navigate = useNavigate();
+  const { username } = location.state || {};
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState([]);
   const [uploadStatus, setUploadStatus] = useState(null);
   const [uploadStatusCode, setUploadStatusCode] = useState(0);
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
   const [uploadedData, setUploadedData] = useState(null);
   const [rollNumber, setRollNumber] = useState(null);
-
-  const questionPaper = location.state?.uploadedData;
-
-  // console.log("question paper receied in teavhe rhome is: \n",questionPaper);
 
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
   };
-
 
   const handleDragLeave = () => {
     setIsDragging(false);
@@ -36,13 +29,12 @@ const TeacherHome = () => {
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
-  
+
     const droppedFiles = Array.from(e.dataTransfer.files);
     setFiles(droppedFiles);
     const rollNumbers = droppedFiles.map((file) => file.name.substring(0, 8));
     setRollNumber(rollNumbers);
   };
-  
 
   const uploadFiles = async () => {
     if (files.length === 0) {
@@ -54,8 +46,8 @@ const TeacherHome = () => {
     setUploadStatus(null);
 
     const formData = new FormData();
-    files.forEach(file => {
-      formData.append('file', file); 
+    files.forEach((file) => {
+      formData.append('file', file);
     });
 
     try {
@@ -66,11 +58,11 @@ const TeacherHome = () => {
 
       if (response.ok) {
         const result = await response.json();
-        setUploadedData(result); 
-        // rollNumberRender();
+        setUploadedData(result);
         showUploadStatus('Files Uploaded Successfully!', true);
         console.log('Files uploaded:', result);
         setUploadStatusCode(1);
+        handleSubmitQuestion(result);
       } else {
         showUploadStatus('File Upload Failed.', false);
         console.error('Failed response:', await response.text());
@@ -83,55 +75,27 @@ const TeacherHome = () => {
     }
   };
 
-
-  console.log(rollNumber);
-  
   const showUploadStatus = (message, isSuccess) => {
-    setUploadStatus({ message, isSuccess }); // Store message and success flag
+    setUploadStatus({ message, isSuccess });
     setTimeout(() => {
-      setUploadStatus(null); // Clear the message after 3 seconds
-    }, 3000); // 3000 milliseconds = 3 seconds
+      setUploadStatus(null);
+    }, 3000); // 3 seconds
   };
-  
 
-  const handleEvaluate = async () => {
-    if (!uploadedData) {
-      showUploadStatus('No uploaded data to evaluate.', false);
+  const handleSubmitQuestion = (result) => {
+    if (!result) {
+      showUploadStatus('No question paper submitted.', false);
       return;
     }
-
-    setIsLoading(true);
-console.log("pressed button");
-    try {
-      const response = await fetch('http://localhost:8080/api/evaluate/grade', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: uploadedData, questions: questionPaper }), 
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Evaluation result:', result);
-        navigate('/teacher-grades', { state: { result, rollNumber } }); 
-      } else {
-        console.error('Evaluation failed:', await response.text());
-        showUploadStatus('Evaluation failed.', false);
-      }
-    } catch (error) {
-      console.error('Error during evaluation:', error);
-      showUploadStatus('Error during evaluation.', false);
-    } finally {
-      setIsLoading(false);
-    }
+  
+    // Pass the result directly to the next page
+    navigate('/teacher-home', { state: { uploadedData: result } });
   };
 
   const handleFileSelect = (e) => {
     const selectedFiles = Array.from(e.target.files);
     setFiles(selectedFiles);
-    const rollNumbers = selectedFiles.map((file) => file.name.substring(0, 8));
-    setRollNumber(rollNumbers);
   };
-  
 
   const renderFileList = () => {
     if (files.length === 0) {
@@ -140,10 +104,10 @@ console.log("pressed button");
 
     return (
       <ul>
-      {files.map((file, index) => (
-        <li key={index}>{file.name.substring(0, 8)}</li>
-      ))}
-    </ul>
+        {files.map((file, index) => (
+          <li key={index}>{file.name}</li>
+        ))}
+      </ul>
     );
   };
 
@@ -152,29 +116,32 @@ console.log("pressed button");
   };
 
   return (
-    <div className={`main-teacher-home ${isLoading ? 'loading' : ''}`}> {/* Add a class for loading state */}
+    <div className={`main-teacher-home ${isLoading ? 'loading' : ''}`}>
+      {/* Logout Button */}
       <div className="teacher-lo-btn-cont">
-        <button 
-          className='teacher-lo-btn' 
-          onClick={handleLogout} 
-          disabled={isLoading} // Disable when loading
+        <button
+          className="teacher-lo-btn"
+          onClick={handleLogout}
+          disabled={isLoading}
         >
           Logout
         </button>
       </div>
-      <div className="logo"> 
-        Smart<span style={{ color: "rgb(234,67,89)" }}>TA</span>
-      </div>
-      <div className="msg-robo-cont">
-        <div className="welcome-msg"> 
-          Upload Student Responses here {username}
-        </div>
 
+      {/* Logo */}
+      <div className="logo">
+        Smart<span style={{ color: 'rgb(234,67,89)' }}>TA</span>
+      </div>
+
+      {/* Welcome Message and Robo Icon */}
+      <div className="msg-robo-cont">
+        <div className="welcome-msg">Welcome, Prof. {username}</div>
         <div className="walking-robo">
-          <img className='walkingroboicon' src={walkingRobo} alt="" />
+          <img className="walkingroboicon" src={walkingRobo} alt="Walking Robo" />
         </div>
       </div>
-      
+
+      {/* Drag-and-Drop Area */}
       <div
         className={`drag-drop-area ${isDragging ? 'dragging' : ''}`}
         onDragOver={handleDragOver}
@@ -194,46 +161,40 @@ console.log("pressed button");
             multiple
             onChange={handleFileSelect}
             className="file-upload-input"
-            disabled={isLoading} // Disable file selection when loading
+            disabled={isLoading}
           />
         </div>
       </div>
 
+      {/* Submit Buttons */}
       <div className="submit-cont">
-        <button 
+        <button
           style={{ display: uploadStatusCode === 0 ? 'block' : 'none' }}
-          className='btn-submit' 
-          onClick={uploadFiles} 
-          type='button' 
-          disabled={isLoading} // Disable when loading
+          className="btn-submit"
+          onClick={uploadFiles}
+          type="button"
+          disabled={isLoading}
         >
-          Upload Files
-        </button>
-        <button 
-          className='btn-submit' 
-          onClick={handleEvaluate} 
-          type='submit' 
-          disabled={isLoading} // Disable when loading
-        >
-          Evaluate
+          Upload Question Paper
         </button>
       </div>
 
+      {/* Loading Indicator */}
       {isLoading && (
         <div className="loading-indicator">
           <img src={loadingSpinner} alt="Loading..." />
-            Loading...
+          Loading...
         </div>
-         )} 
+      )}
+
+      {/* Upload Status Message */}
       {uploadStatus && (
-  <div className={`upload-status ${uploadStatus.isSuccess ? 'success' : 'error'}`}>
-    {uploadStatus.message}
-  </div>
-)}
-
-
+        <div className={`upload-status ${uploadStatus.isSuccess ? 'success' : 'error'}`}>
+          {uploadStatus.message}
+        </div>
+      )}
     </div>
   );
 };
 
-export default TeacherHome;
+export default SubmitQuestionPaper;
