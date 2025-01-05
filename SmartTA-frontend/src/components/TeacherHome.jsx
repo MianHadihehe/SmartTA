@@ -17,6 +17,7 @@ const TeacherHome = () => {
   const [uploadStatusCode, setUploadStatusCode] = useState(0);
   const [isLoading, setIsLoading] = useState(false); 
   const [uploadedData, setUploadedData] = useState(null);
+  const [rollNumber, setRollNumber] = useState(null);
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -38,7 +39,7 @@ const TeacherHome = () => {
 
   const uploadFiles = async () => {
     if (files.length === 0) {
-      showUploadStatus('No Files to Upload.');
+      showUploadStatus('No Files to Upload.', false);
       return;
     }
 
@@ -59,31 +60,43 @@ const TeacherHome = () => {
       if (response.ok) {
         const result = await response.json();
         setUploadedData(result); 
-        showUploadStatus('Files Uploaded Successfully!');
+        // rollNumberRender();
+        showUploadStatus('Files Uploaded Successfully!', true);
         console.log('Files uploaded:', result);
         setUploadStatusCode(1);
       } else {
-        showUploadStatus('File Upload Failed.');
+        showUploadStatus('File Upload Failed.', false);
         console.error('Failed response:', await response.text());
       }
     } catch (error) {
-      showUploadStatus('Error Uploading Files.');
+      showUploadStatus('Error Uploading Files.', false);
       console.error('Error:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const showUploadStatus = (message) => {
-    setUploadStatus(message); // Set the message
+  const rollNumberRender = () =>{
+    {files.map((file, index) => (
+      setRollNumber(file.name.substring(0.9))
+      // <li key={index}>{file.name.substring(0, 9)}</li>
+    ))
+    }
+  }
+
+  console.log(rollNumber);
+  
+  const showUploadStatus = (message, isSuccess) => {
+    setUploadStatus({ message, isSuccess }); // Store message and success flag
     setTimeout(() => {
       setUploadStatus(null); // Clear the message after 3 seconds
     }, 3000); // 3000 milliseconds = 3 seconds
   };
+  
 
   const handleEvaluate = async () => {
     if (!uploadedData) {
-      showUploadStatus('No uploaded data to evaluate.');
+      showUploadStatus('No uploaded data to evaluate.', false);
       return;
     }
 
@@ -102,11 +115,11 @@ console.log("pressed button");
         navigate('/teacher-grades', { state: { result } }); 
       } else {
         console.error('Evaluation failed:', await response.text());
-        showUploadStatus('Evaluation failed.');
+        showUploadStatus('Evaluation failed.', false);
       }
     } catch (error) {
       console.error('Error during evaluation:', error);
-      showUploadStatus('Error during evaluation.');
+      showUploadStatus('Error during evaluation.', false);
     } finally {
       setIsLoading(false);
     }
@@ -115,6 +128,7 @@ console.log("pressed button");
   const handleFileSelect = (e) => {
     const selectedFiles = Array.from(e.target.files);
     setFiles(selectedFiles);
+    rollNumberRender();
   };
 
   const renderFileList = () => {
@@ -125,7 +139,7 @@ console.log("pressed button");
     return (
       <ul>
         {files.map((file, index) => (
-          <li key={index}>{file.name}</li>
+          <li key={index}>{file.name.substring(0, 9)}</li>
         ))}
       </ul>
     );
@@ -210,12 +224,11 @@ console.log("pressed button");
         </div>
          )} 
       {uploadStatus && (
-  <div
-    className={`upload-status ${uploadStatus.includes('successfully') ? 'success' : 'error'}`}
-  >
-    {uploadStatus}
+  <div className={`upload-status ${uploadStatus.isSuccess ? 'success' : 'error'}`}>
+    {uploadStatus.message}
   </div>
 )}
+
 
     </div>
   );

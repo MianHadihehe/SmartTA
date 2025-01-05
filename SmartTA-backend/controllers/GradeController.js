@@ -28,7 +28,7 @@ const gradeTextWithGPT = async (ocrText) => {
           },
           {
             role: "user",
-            content: `Please grade the following text and provide feedback:\n\n${ocrText}. Also extract the rollnumber from the text and give grade,rollnumber and feedback all separated by a semi-colon`,
+            content: `Please grade the following text and provide feedback:\n\n${ocrText}. Suppose questions yourself and also provide feedback for improved. Separate grade and feedback with semi-colon`,
           },
         ],
       },
