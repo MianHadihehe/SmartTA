@@ -7,6 +7,7 @@ const splineRoboURL = import.meta.env.VITE_ROBO_URL;
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [rollNumber, setRollNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState(''); // New state for role selection
@@ -47,21 +48,21 @@ const Signup = () => {
     console.log("Confirm Password: ", confirmPassword);
   
   }, [password, confirmPassword, username, email, role]);
-  
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
+
+  const handleStudentSubmit = async (e) => {
     e.preventDefault();
 
     const userData = {
       username,
       email,
+      rollNumber,
       password,
       role, // Include the selected role in the submission
     };
 
     try {
-      const response = await fetch('http://localhost:8080/api/signup', {
+      const response = await fetch('http://localhost:8080/api/student-signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,6 +88,52 @@ const Signup = () => {
 
     
   };
+  
+  const handleTeacherSubmit = async (e) => {
+    e.preventDefault();
+
+    const userData = {
+      username,
+      email,
+      password,
+      role, // Include the selected role in the submission
+    };
+
+    try {
+      const response = await fetch('http://localhost:8080/api/teacher-signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log(response);
+        setError("User Registered Successfully");
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setRole(""); 
+      } else {
+        setError(data.message || 'Error during registration');
+      }
+    } catch (err) {
+      setError('Server error');
+    }
+
+    
+  };
+
+  const handleSubmit = (e) => {
+    if (role === 'student') {
+        handleStudentSubmit(e);
+    } else if (role === 'teacher') {
+        handleTeacherSubmit(e);
+    }
+};
 
   return (
     <div className="signup-page">
@@ -122,6 +169,17 @@ const Signup = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+
+            {/* Roll Number Input - Only show if the user is a student */}
+            {role === 'student' && (
+              <input
+                type="text"
+                placeholder="Roll Number"
+                required
+                value={rollNumber}
+                onChange={(e) => setRollNumber(e.target.value)}
+              />
+            )}
 
             {/* Password Input with Toggle */}
             <div className="password-field">

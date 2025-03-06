@@ -35,11 +35,11 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
         messages: [
           {
             role: "system",
-            content: "You are a teaching assistant responsible for grading student assignments according to the questions.",
+            content: "You are a teaching assistant responsible for grading student assignments according to the questions.Your job is to give Marks and an extensive feedback to the student.",
           },
           {
             role: "user",
-            content: `Suppose you are a teaching assistant trying to replicate grading assignments of an actual human teaching assistant. These are the questions to grade: ${questions}.Ensure you are grading on the basis of the marks given in the question paper. Please grade the following student response and provide feedback and total marks.\n\n${ocrText}. Separate grade and feedback with a semicolon.`,
+            content: `These are the questions to grade: ${questions}.Ensure you are grading on the basis of the marks given in the question paper. Please grade the following student response and provide feedback and total marks.\n\n${ocrText}.Use I and 1 in between strings as seperators(|) as they do in automata . Give grade as 'Marks:' and feedback as 'Feedback:', separate grade and feedback with a semicolon.`,
           },
         ],
       },

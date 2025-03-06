@@ -1,14 +1,14 @@
-const User = require("../models/User"); // Use require instead of import
+const Student = require("../models/StudentSignup"); // Use require instead of import
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
-  const { username, email, password, role } = req.body;
+  const { username, email, rollNumber, password, role } = req.body;
 
   try {
     // Check if user with the same email already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
+    const existingStudent = await Student.findOne({ email });
+    if (existingStudent) {
       return res.status(400).json({ message: "Email already in use" });
     }
 
@@ -16,18 +16,19 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user
-    const user = new User({
+    const student = new Student({
       username,
       email,
+      rollNumber,
       password: hashedPassword, // Save the hashed password
       role,
     });
 
     // Save the user to the database
-    await user.save();
+    await student.save();
 
     // Respond with success
-    res.status(201).json({ message: "User registered successfully" });
+    res.status(201).json({ message: "Student registered successfully" });
   } catch (err) {
     console.error("Error in registration:", err);
     res.status(500).json({ message: "Server error" });

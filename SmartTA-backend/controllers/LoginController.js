@@ -1,4 +1,4 @@
-const User = require("../models/User"); // Use require instead of import
+const User = require("../models/TeacherSignup"); // Use require instead of import
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 

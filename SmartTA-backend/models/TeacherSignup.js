@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 // Define User schema
-const UserSchema = new mongoose.Schema({
+const TeacherSchema = new mongoose.Schema({
   username: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
 });
 
 // Hash the password before saving
-UserSchema.pre("save", async function (next) {
+TeacherSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next(); // Skip hashing if password is not modified
   try {
     const salt = await bcrypt.genSalt(10);
@@ -21,6 +21,6 @@ UserSchema.pre("save", async function (next) {
   }
 });
 
-// Export the User model
-const User = mongoose.model("User", UserSchema);
-module.exports = User;
+// Export the Teacher model
+const Teacher = mongoose.model("Teacher", TeacherSchema);
+module.exports = Teacher;

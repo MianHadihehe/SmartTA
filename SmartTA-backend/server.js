@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv"); // For environment variables
 const loginRoute = require("./routes/LoginRouter"); // No .js extension needed
-const signupRoute = require("./routes/SignUpRouter"); // No .js extension needed
+const signupTeacherRoute = require("./routes/signupTeacherRoute"); // No .js extension needed
+const signupStudentRoute = require("./routes/signupStudentRoute"); // No .js extension needed
 const uploadRoute = require("./routes/UploadRouter"); // No .js extension needed
 const gradeRoute = require("./routes/GradeRouter");
 
@@ -18,7 +19,8 @@ app.use(cors());
 
 // Routes
 app.use("/api/login", loginRoute);
-app.use("/api/signup", signupRoute);
+app.use("/api/teacher-signup", signupTeacherRoute);
+app.use("/api/student-signup", signupStudentRoute);
 app.use("/api/upload", uploadRoute);
 app.use("/api/evaluate", gradeRoute);
 
