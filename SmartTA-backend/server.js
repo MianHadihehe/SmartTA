@@ -7,6 +7,7 @@ const signupTeacherRoute = require("./routes/signupTeacherRoute"); // No .js ext
 const signupStudentRoute = require("./routes/signupStudentRoute"); // No .js extension needed
 const uploadRoute = require("./routes/UploadRouter"); // No .js extension needed
 const gradeRoute = require("./routes/GradeRouter");
+const gradeSaveRoute = require("./routes/GradeSaveRouter");
 
 
 dotenv.config(); // Initialize environment variables
@@ -23,6 +24,8 @@ app.use("/api/teacher-signup", signupTeacherRoute);
 app.use("/api/student-signup", signupStudentRoute);
 app.use("/api/upload", uploadRoute);
 app.use("/api/evaluate", gradeRoute);
+app.use("/api/submit-grades", gradeSaveRoute);
+
 
 
 // MongoDB Connection

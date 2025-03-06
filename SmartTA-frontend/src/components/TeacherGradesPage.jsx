@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import '../styling/teachergrades.css'; 
 import uploadIcon from '../assets/upload_icon.png';
 import walkingRobo from '../assets/walking-robo.gif';
+import settingsLogo from '../assets/edit-settings-logo.png';
+import MessageBox from './MessageBox';
 
 const TeacherGradesPage = () => {
 
@@ -39,28 +41,36 @@ const TeacherGradesPage = () => {
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAssignmentNumberModalOpen, setIsAssignmentNumberModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [manualGrade, setManualGrade] = useState('');
+  const [messageBoxVisible, setMessageBoxVisible] = useState(false);
+  const [messageBoxContent, setMessageBoxContent] = useState('');  
+  const [manualFeedback, setManualManualFeedback] = useState('');
+  const [assignmentNumber, setAssignmentNumber] = useState('');
+
 
   // Open modal for editing grade
   const handleEdit = (student) => {
     setSelectedStudent(student);
     setManualGrade(student.grade);
+    setManualManualFeedback(student.feedback);
     setIsModalOpen(true);
   };
-
+  // console.log(typeof grades[0].rollNumber);
   // Save the manual grade
-  const handleSaveGrade = () => {
-    setGrades((prevGrades) =>
-      prevGrades.map((g) =>
-        g.rollNumber === selectedStudent.rollNumber ? { ...g, grade: manualGrade } : g
-      )
-    );
-    setIsModalOpen(false);
+  const handleSaveModal = () => {
+      setGrades(grades.map(g => {
+          if (g.rollNumber === selectedStudent.rollNumber) {
+              return { ...g, grade: manualGrade, feedback: manualFeedback };
+          }
+          return g;
+      }));
+      setIsModalOpen(false);
   };
 
   const handleAcceptAll = () => {
-    alert('All grades accepted!');
+    setIsAssignmentNumberModalOpen(true);
   };
 
   const handleRetry = () => {
@@ -70,6 +80,57 @@ const TeacherGradesPage = () => {
   const handleLogout = () => {
     navigate('/');
   };
+console.log(rollNumber);
+  const handleSaveGrades = async () => {
+    if(!assignmentNumber){
+      showMessage('❌ Must enter assignment number to save !');
+      return;
+    }
+    const payload = {
+      rollNumber,
+      grade: manualGrade,
+      feedback: manualFeedback,
+      assignmentNumber: assignmentNumber
+    };
+  
+    try {
+      const response = await fetch('http://localhost:8080/api/submit-grades', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+  
+      if (response.ok) {
+        showMessage('✅ Grades saved successfully!');
+        setIsAssignmentNumberModalOpen(false); 
+        setTimeout(() => {
+          navigate('/submit-question');
+      }, 3000); 
+      } else {
+        throw new Error('Failed to save grade');
+      }
+    } catch (error) {
+      showMessage('❌ Error saving grades!');
+    }
+  };
+
+  const showMessage = (message) => {
+    setMessageBoxContent(message);
+    setMessageBoxVisible(true);
+    setTimeout(() => {
+      setMessageBoxVisible(false);  // Automatically hide the message after 5 seconds
+    }, 5000);
+  };
+
+
+  const handleAssignmentModalCncel = () =>{
+    setIsAssignmentNumberModalOpen(false);
+    setAssignmentNumber(null);
+  }
+  
+  
 
   return (
     <div className="main-teacher-home">
@@ -84,6 +145,8 @@ const TeacherGradesPage = () => {
 
 
       <h2 className='review'>Review Grades</h2>
+
+      {messageBoxVisible && <MessageBox message={messageBoxContent} />}
 
       {/* Grades Table */}
       <div className="grades-container">
@@ -104,7 +167,7 @@ const TeacherGradesPage = () => {
                 <td>{student.grade}</td>
                 <td>{student.feedback}</td>
                 <td>
-                  <button onClick={() => handleEdit(student)} className="edit-btn">Edit</button>
+                  <button onClick={() => handleEdit(student)} className="edit-btn"><img className='settings-logo' src={settingsLogo} alt="Edit"></img></button>
                 </td>
               </tr>
             ))}
@@ -113,7 +176,7 @@ const TeacherGradesPage = () => {
       </div>
 
       <div className="buttons-container">
-        <button className="accept-btn" onClick={handleAcceptAll}>Accept All</button>
+        <button className="accept-btn" onClick={handleAcceptAll}>Accept Grades</button>
         <button className="retry-btn" onClick={handleRetry}>Retry Evaluation</button>
       </div>
 
@@ -127,11 +190,48 @@ const TeacherGradesPage = () => {
               <input
                 type="text"
                 value={manualGrade}
+                required
                 onChange={(e) => setManualGrade(e.target.value)}
               />
             </label>
-            <button className="save-btn" onClick={handleSaveGrade}>Save</button>
+            <label>
+              Manual Feedback:
+              <input
+                type="text"
+                value={manualFeedback}
+                required
+                onChange={(e) => setManualManualFeedback(e.target.value)}
+              />
+            </label>
+            <button className="save-btn" onClick={handleSaveModal}>Save</button>
             <button className="close-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
+          </div>
+          </div>
+        </div>
+      )}
+
+      <div className='messageBox'
+
+      ></div>
+
+        {isAssignmentNumberModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="model-content-cont">
+            <h2>Enter Assignment Number</h2>
+            <label>
+              Assignment Number:
+              </label>
+              <form>
+                <input
+                type="number"
+                value={assignmentNumber}
+                required
+                onChange={(e) => setAssignmentNumber(e.target.value)}
+              />
+              </form>
+            <button className="save-btn" onClick={handleSaveGrades}>Proceed</button>
+            <button className="close-btn" onClick={handleAssignmentModalCncel}>Cancel</button>
           </div>
           </div>
         </div>
