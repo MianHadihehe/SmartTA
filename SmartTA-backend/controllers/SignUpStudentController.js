@@ -13,14 +13,14 @@ const register = async (req, res) => {
     }
 
     // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user
     const student = new Student({
       username,
       email,
       rollNumber,
-      password: hashedPassword, // Save the hashed password
+      password,
       role,
     });
 

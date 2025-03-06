@@ -234,7 +234,7 @@ const Signup = () => {
             <button
               type="submit"
               className="signup-btn"
-              disabled={isButtonDisabled}  // Button is disabled if any field is empty or passwords don't match
+              // disabled={isButtonDisabled}  // Button is disabled if any field is empty or passwords don't match
             >
               Sign Up
             </button>

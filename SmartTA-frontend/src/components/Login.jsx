@@ -7,6 +7,8 @@ const splineRoboURL = import.meta.env.VITE_ROBO_URL;
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState(''); // New state for role selection
+  const [rollNumber, setRollNumber] = useState(''); // New state for role selection
   const [showPassword, setShowPassword] = useState(false); 
   const [error, setError] = useState('');
 
@@ -18,6 +20,7 @@ const Login = () => {
     const loginData = {
       email,
       password,
+      role
     };
 
     try {
@@ -95,6 +98,28 @@ const Login = () => {
               {showPassword ? 'Hide' : 'Show'}
             </span>
           </div>
+
+          {/* {role === 'student' && <input
+            type="text"
+            placeholder="RollNumber"
+            required
+            value={rollNumber}
+            onChange={(e) => setRollNumber(e.target.value)}
+          />
+          } */}
+
+          <div className="role-select">
+              <label>You Are A ?</label>
+              <select
+                required
+                value={role}
+                onChange={(e) => setRole(e.target.value)} // Set role value
+              >
+                <option value="">Choose role</option>
+                <option value="teacher">Teacher</option>
+                <option value="student">Student</option>
+              </select>
+            </div>
 
           <button type="submit" className="login-btn">
             Login
