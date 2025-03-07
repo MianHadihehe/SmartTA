@@ -40,7 +40,8 @@ const Login = () => {
 
 
         if (role === 'teacher') {
-          navigate('/submit-question', { state: { username } });
+          // navigate('/submit-question', { state: { username } });
+          navigate('/teacher-first', { state: { username } });
         } else if (role === 'student') {
           navigate('/student-home', { state: { username } });
         } else {

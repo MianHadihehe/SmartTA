@@ -10,6 +10,7 @@ import TeacherHome from './components/TeacherHome';
 import StudentHome from './components/StudentHome';
 import TeacherGradesPage from './components/TeacherGradesPage';
 import SubmitQuestionPaper from './components/submitQuestionPaper';
+import TeacherFirst from './components/TeacherFirst';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<Login />} /> 
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassOne />} />
+        <Route path="/teacher-first" element={<TeacherFirst />} />
         <Route path="/otp-verification" element={<OtpVerification />} />
         <Route path="/set-new-password" element={<SetNewPassword />} />
         <Route path="/teacher-home" element={<TeacherHome />} />

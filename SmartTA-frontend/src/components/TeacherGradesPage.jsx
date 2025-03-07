@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styling/teachergrades.css'; 
 import uploadIcon from '../assets/upload_icon.png';
@@ -12,6 +12,7 @@ const TeacherGradesPage = () => {
 
   const result = location.state?.result;
   const rollNumber = location.state?.rollNumber;
+  const preDefinedAssignmentNumber = location.state?.assignmentNumber;
   console.log(result);
   const gradedFeedback = result.gradedText;
   const resultArray = gradedFeedback.split(";");
@@ -22,16 +23,29 @@ const TeacherGradesPage = () => {
   console.log("initial_feedback: ",initial_feedback);
 
   const grade = initial_grade.substring(7,initial_grade.length+1);
-  const feedback = initial_feedback.substring(10,initial_feedback.length+1);
+  const start = initial_feedback.indexOf(':') + 1;
+  const feedback = initial_feedback.substring(start);
+
+  console.log(feedback);
   // const rollID = resultArray.find(line => line.startsWith("Rollnumber:"))?.split(": ")[1];
 
 
-  console.log("Grade:", grade);
-  console.log("Feedback:", feedback);
-  console.log("Roll Number:", rollNumber);
+
+  // console.log("Grade:", grade);
+  // console.log("Feedback:", feedback);
+  // console.log("Roll Number:", rollNumber);
+
+  useEffect(()=>{
+    console.log("out");
+    if(preDefinedAssignmentNumber){
+      console.log("in");
+      setAssignmentNumber(preDefinedAssignmentNumber);
+    }
+  },[])
 
   const navigate = useNavigate(); 
-  const { username } = location.state || {}; // Receive username from navigation state
+
+  const { username } = location.state || {}; 
 
   // Mock initial grades provided by AI
   const [grades, setGrades] = useState([
@@ -40,13 +54,15 @@ const TeacherGradesPage = () => {
     // { rollNumber: '21L-1890', grade: 'C+', feedback: 'Needs more effort.' },
   ]);
 
+
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAssignmentNumberModalOpen, setIsAssignmentNumberModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [manualGrade, setManualGrade] = useState('');
+  const [manualGrade, setManualGrade] = useState(grade);
   const [messageBoxVisible, setMessageBoxVisible] = useState(false);
   const [messageBoxContent, setMessageBoxContent] = useState('');  
-  const [manualFeedback, setManualManualFeedback] = useState('');
+  const [manualFeedback, setManualManualFeedback] = useState(feedback);
   const [assignmentNumber, setAssignmentNumber] = useState('');
 
 
@@ -70,11 +86,16 @@ const TeacherGradesPage = () => {
   };
 
   const handleAcceptAll = () => {
-    setIsAssignmentNumberModalOpen(true);
+    if(!assignmentNumber){
+      setIsAssignmentNumberModalOpen(true);
+    }
+    else{
+      handleSaveGrades();
+    }
   };
 
   const handleRetry = () => {
-    alert('Retrying AI-based grading...');
+    navigate('/teacher-first' ,{state: {username}});
   };
 
   const handleLogout = () => {
@@ -88,8 +109,8 @@ const TeacherGradesPage = () => {
     }
     const payload = {
       rollNumber,
-      grade: manualGrade,
-      feedback: manualFeedback,
+      grade: manualGrade || grade,
+      feedback: manualFeedback || feedback,
       assignmentNumber: assignmentNumber
     };
   
@@ -107,7 +128,7 @@ const TeacherGradesPage = () => {
         setIsAssignmentNumberModalOpen(false);
         setAssignmentNumber(null); 
         setTimeout(() => {
-          navigate('/submit-question');
+          navigate('/teacher-first' ,{state: {username}});
       }, 3000); 
       } else {
         throw new Error('Failed to save grade');
@@ -116,6 +137,8 @@ const TeacherGradesPage = () => {
       showMessage('❌ Error saving grades!');
     }
   };
+
+  console.log("ass num: ",assignmentNumber);
 
   const showMessage = (message) => {
     setMessageBoxContent(message);
@@ -132,7 +155,7 @@ const TeacherGradesPage = () => {
   }
   
   
-
+  console.log(assignmentNumber);
   return (
     <div className="main-teacher-home">
       <div className="teacher-lo-btn-cont">
@@ -198,9 +221,9 @@ const TeacherGradesPage = () => {
             </label>
             <label>
               Manual Feedback:
-              <input
+              <textarea
                 type="text"
-                className='modal-input'
+                className='textarea-input'
                 value={manualFeedback}
                 required
                 onChange={(e) => setManualManualFeedback(e.target.value)}

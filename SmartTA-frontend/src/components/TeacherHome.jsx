@@ -5,12 +5,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import '../styling/teacherhome.css'; 
 import uploadIcon from '../assets/upload_icon.png';
 import walkingRobo from '../assets/walking-robo.gif';
+import MessageBox from './MessageBox';
 import loadingSpinner from '../assets/loading-spinner.gif'; // Add a spinner image or animation
 
 const TeacherHome = () => {
   const location = useLocation();
   const navigate = useNavigate(); 
-  const { username } = location.state || {}; 
+  // const { username } = location.state || {}; 
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState([]);
   const [uploadStatus, setUploadStatus] = useState(null);
@@ -18,14 +19,27 @@ const TeacherHome = () => {
   const [isLoading, setIsLoading] = useState(false); 
   const [uploadedData, setUploadedData] = useState(null);
   const [rollNumber, setRollNumber] = useState(null);
+  const [messageBoxVisible, setMessageBoxVisible] = useState(false);
+  const [messageBoxContent, setMessageBoxContent] = useState('');  
 
   const questionPaper = location.state?.uploadedData;
+  const assignmentNumber = location.state?.assignmentNumber;
+  const username = location.state?.username;
 
   // console.log("question paper receied in teavhe rhome is: \n",questionPaper);
 
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
+  };
+
+
+  const showMessage = (message) => {
+    setMessageBoxContent(message);
+    setMessageBoxVisible(true);
+    setTimeout(() => {
+      setMessageBoxVisible(false);  // Automatically hide the message after 5 seconds
+    }, 5000);
   };
 
 
@@ -46,7 +60,7 @@ const TeacherHome = () => {
 
   const uploadFiles = async () => {
     if (files.length === 0) {
-      showUploadStatus('No Files to Upload.', false);
+      showMessage('❌ No Files to Upload.');
       return;
     }
 
@@ -68,35 +82,30 @@ const TeacherHome = () => {
         const result = await response.json();
         setUploadedData(result); 
         // rollNumberRender();
-        showUploadStatus('Files Uploaded Successfully!', true);
-        console.log('Files uploaded:', result);
+        showMessage('✅ Files Uploaded Successfully!');
+        // console.log('Files uploaded:', result);
         setUploadStatusCode(1);
       } else {
-        showUploadStatus('File Upload Failed.', false);
+        showMessage('❌ File Upload Failed.');
         console.error('Failed response:', await response.text());
       }
     } catch (error) {
-      showUploadStatus('Error Uploading Files.', false);
+      showUploadStatus('❌ Error Uploading Files.');
       console.error('Error:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // console.log(questionPaper);
 
-  console.log(rollNumber);
-  
-  const showUploadStatus = (message, isSuccess) => {
-    setUploadStatus({ message, isSuccess }); // Store message and success flag
-    setTimeout(() => {
-      setUploadStatus(null); // Clear the message after 3 seconds
-    }, 3000); // 3000 milliseconds = 3 seconds
-  };
+
+  // console.log(rollNumber);
   
 
   const handleEvaluate = async () => {
     if (!uploadedData) {
-      showUploadStatus('No uploaded data to evaluate.', false);
+      showMessage('❌ No uploaded data to evaluate.');
       return;
     }
 
@@ -112,14 +121,14 @@ console.log("pressed button");
       if (response.ok) {
         const result = await response.json();
         console.log('Evaluation result:', result);
-        navigate('/teacher-grades', { state: { result, rollNumber } }); 
+        navigate('/teacher-grades', { state: { result, rollNumber, assignmentNumber, username } }); 
       } else {
         console.error('Evaluation failed:', await response.text());
-        showUploadStatus('Evaluation failed.', false);
+        showMessage('❌ Evaluation failed.');
       }
     } catch (error) {
       console.error('Error during evaluation:', error);
-      showUploadStatus('Error during evaluation.', false);
+      showMessage('❌ Error during evaluation.');
     } finally {
       setIsLoading(false);
     }
@@ -167,7 +176,7 @@ console.log("pressed button");
       </div>
       <div className="msg-robo-cont">
         <div className="welcome-msg"> 
-          Upload Student Responses here {username}
+          Upload Student Responses here
         </div>
 
         <div className="walking-robo">
@@ -175,6 +184,8 @@ console.log("pressed button");
         </div>
       </div>
       
+      {messageBoxVisible && <MessageBox message={messageBoxContent} />}
+
       <div
         className={`drag-drop-area ${isDragging ? 'dragging' : ''}`}
         onDragOver={handleDragOver}

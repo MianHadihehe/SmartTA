@@ -129,7 +129,7 @@ const SubmitQuestionPaper = () => {
             showMessage('✅ Assignment saved and uploaded successfully!');
             // console.log(data);
             setTimeout(() => {
-              navigate('/teacher-home', { state: { uploadedData: result } });
+              navigate('/teacher-home', { state: { assignmentNumber, username, uploadedData: result } });
           }, 2000); 
         } else {
             throw new Error(data.message || 'Failed to save the assignment');
