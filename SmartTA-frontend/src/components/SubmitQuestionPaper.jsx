@@ -4,6 +4,7 @@ import '../styling/teacherhome.css';
 import uploadIcon from '../assets/upload_icon.png';
 import walkingRobo from '../assets/walking-robo.gif';
 import loadingSpinner from '../assets/loading-spinner.gif'; // Add a spinner image or animation
+import MessageBox from './MessageBox';
 
 const SubmitQuestionPaper = () => {
   const location = useLocation();
@@ -16,6 +17,11 @@ const SubmitQuestionPaper = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedData, setUploadedData] = useState(null);
   const [rollNumber, setRollNumber] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [assignmentNumber, setAssignmentNumber] = useState('');
+  const [messageBoxVisible, setMessageBoxVisible] = useState(false);
+  const [messageBoxContent, setMessageBoxContent] = useState('');  
+
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -24,6 +30,14 @@ const SubmitQuestionPaper = () => {
 
   const handleDragLeave = () => {
     setIsDragging(false);
+  };
+
+  const showMessage = (message) => {
+    setMessageBoxContent(message);
+    setMessageBoxVisible(true);
+    setTimeout(() => {
+      setMessageBoxVisible(false);  // Automatically hide the message after 5 seconds
+    }, 5000);
   };
 
   const handleDrop = (e) => {
@@ -36,9 +50,13 @@ const SubmitQuestionPaper = () => {
     setRollNumber(rollNumbers);
   };
 
+  const handleNewAssignment = () =>{
+
+  }
+
   const uploadFiles = async () => {
     if (files.length === 0) {
-      showUploadStatus('No Files to Upload.', false);
+      showMessage('❌ No files to be uploaded!')
       return;
     }
 
@@ -59,38 +77,78 @@ const SubmitQuestionPaper = () => {
       if (response.ok) {
         const result = await response.json();
         setUploadedData(result);
-        showUploadStatus('Files Uploaded Successfully!', true);
+        // sh('Files Uploaded Successfully!', true);
         console.log('Files uploaded:', result);
         setUploadStatusCode(1);
-        handleSubmitQuestion(result);
+        // handleSubmitQuestion(result);
+        saveAssignment(result);
       } else {
-        showUploadStatus('File Upload Failed.', false);
+        showMessage('❌ File Upload Failed.');
         console.error('Failed response:', await response.text());
       }
     } catch (error) {
-      showUploadStatus('Error Uploading Files.', false);
+      showMessage('❌ Error Uploading Files.');
       console.error('Error:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const showUploadStatus = (message, isSuccess) => {
-    setUploadStatus({ message, isSuccess });
-    setTimeout(() => {
-      setUploadStatus(null);
-    }, 3000); // 3 seconds
-  };
+  // const showUploadStatus = (message, isSuccess) => {
+  //   setUploadStatus({ message, isSuccess });
+  //   setTimeout(() => {
+  //     setUploadStatus(null);
+  //   }, 3000); // 3 seconds
+  // };
 
-  const handleSubmitQuestion = (result) => {
-    if (!result) {
-      showUploadStatus('No question paper submitted.', false);
+  const saveAssignment = async (result) =>{
+    console.log("in save assignemnt number ", assignmentNumber);
+    console.log("data: ",result);
+    if (!assignmentNumber || !result) {
+      showMessage('❌ Some error occured while saving the assignment question paper.');
       return;
+  }
+
+    const requestBody = {
+        assignmentNumber: assignmentNumber,
+        text: result
+    };
+
+    try {
+        const response = await fetch('http://localhost:8080/api/save-assignment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showMessage('✅ Assignment saved and uploaded successfully!');
+            // console.log(data);
+            setTimeout(() => {
+              navigate('/teacher-home', { state: { uploadedData: result } });
+          }, 2000); 
+        } else {
+            throw new Error(data.message || 'Failed to save the assignment');
+        }
+    } catch (error) {
+        // alert(`Error: ${error.message}`);
+        showMessage('❌ Some error occured while saving the assignment question paper.');
     }
+  }
+
+  // const handleSubmitQuestion = (result) => {
+  //   if (!result) {
+  //     showUploadStatus('No question paper submitted.', false);
+  //     return;
+  //   }
   
-    // Pass the result directly to the next page
-    navigate('/teacher-home', { state: { uploadedData: result } });
-  };
+  //   // Pass the result directly to the next page
+  //   navigate('/teacher-home', { state: { uploadedData: result } });
+  // };
 
   const handleFileSelect = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -114,6 +172,25 @@ const SubmitQuestionPaper = () => {
   const handleLogout = () => {
     navigate('/');
   };
+
+  const handleProceed = () =>{
+    if(assignmentNumber===''){
+      showMessage('❌ Must enter assignment number!');
+    // console.log("hii1"); 
+      return;
+    }
+    // console.log("hii2");
+    setIsModalOpen(false);
+  }
+
+  // const handleModalCancel = () =>{
+  //   if(assignmentNumber===''){
+  //     showMessage('❌ Must enter assignment number!');
+  //     return;
+  //   }
+  //   setAssignmentNumber('');
+  //   setIsModalOpen(false);
+  // }
 
   return (
     <div className={`main-teacher-home ${isLoading ? 'loading' : ''}`}>
@@ -184,6 +261,32 @@ const SubmitQuestionPaper = () => {
         <div className="loading-indicator">
           <img src={loadingSpinner} alt="Loading..." />
           Loading...
+        </div>
+      )}
+
+{messageBoxVisible && <MessageBox message={messageBoxContent} />}
+
+{isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="model-content-cont">
+            <h2>Enter Assignment Number</h2>
+            <label>
+              Assignment Number:
+              </label>
+              <form>
+                <input
+                className='modal-input'
+                type="number"
+                value={assignmentNumber}
+                required
+                onChange={(e) => setAssignmentNumber(e.target.value)}
+              />
+              </form>
+            <button className="save-btn" onClick={handleProceed}>Save</button>
+            {/* <button className="close-btn" onClick={handleModalCancel}>Cancel</button> */}
+          </div>
+          </div>
         </div>
       )}
 

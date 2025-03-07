@@ -202,3 +202,16 @@ body {
     width:100%;
     height:100%;
   }
+
+  .save-btn:hover{
+    background-color: #b33636;
+  }
+  .close-btn:hover {
+    background-color: rgb(30,30,30);
+  }
+  
+  .modal-input:focus {
+    outline: none; /* Removes the default focus outline */
+    border: 2px solid #b33636; 
+    box-shadow: 0 0 5px #666;
+  }

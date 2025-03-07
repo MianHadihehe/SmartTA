@@ -80,7 +80,7 @@ const TeacherGradesPage = () => {
   const handleLogout = () => {
     navigate('/');
   };
-console.log(rollNumber);
+  
   const handleSaveGrades = async () => {
     if(!assignmentNumber){
       showMessage('❌ Must enter assignment number to save !');
@@ -104,7 +104,8 @@ console.log(rollNumber);
   
       if (response.ok) {
         showMessage('✅ Grades saved successfully!');
-        setIsAssignmentNumberModalOpen(false); 
+        setIsAssignmentNumberModalOpen(false);
+        setAssignmentNumber(null); 
         setTimeout(() => {
           navigate('/submit-question');
       }, 3000); 
@@ -189,6 +190,7 @@ console.log(rollNumber);
               Manual Grade:
               <input
                 type="text"
+                className='modal-input'
                 value={manualGrade}
                 required
                 onChange={(e) => setManualGrade(e.target.value)}
@@ -198,6 +200,7 @@ console.log(rollNumber);
               Manual Feedback:
               <input
                 type="text"
+                className='modal-input'
                 value={manualFeedback}
                 required
                 onChange={(e) => setManualManualFeedback(e.target.value)}
@@ -224,6 +227,7 @@ console.log(rollNumber);
               </label>
               <form>
                 <input
+                className='modal-input'
                 type="number"
                 value={assignmentNumber}
                 required
