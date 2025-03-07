@@ -42,10 +42,10 @@ const Signup = () => {
     }
   
     // Debug logs for understanding the state
-    console.log("Passwords Match: ", passwordsMatch);
-    console.log("Button Disabled: ", isButtonDisabled);
-    console.log("Password: ", password);
-    console.log("Confirm Password: ", confirmPassword);
+    // console.log("Passwords Match: ", passwordsMatch);
+    // console.log("Button Disabled: ", isButtonDisabled);
+    // console.log("Password: ", password);
+    // console.log("Confirm Password: ", confirmPassword);
   
   }, [password, confirmPassword, username, email, role]);
 
@@ -72,7 +72,7 @@ const Signup = () => {
 
       const data = await response.json();
       if (response.ok) {
-        console.log(response);
+        // console.log(response);
         setError("User Registered Successfully");
         setUsername("");
         setEmail("");
@@ -87,6 +87,19 @@ const Signup = () => {
     }
 
     
+  };
+
+  const handleChange = (e) => {
+    // console.log(e);
+    const { value } = e.target;
+    let formattedInput = value.replace(/[^0-9]/g, ''); 
+    // Check the length of the cleaned input to decide how to format it
+    if (formattedInput.length <= 2) {
+      setRollNumber(formattedInput);
+    } else if (formattedInput.length > 2) {
+      // Insert 'L-' right after the second digit
+      setRollNumber(`${formattedInput.slice(0, 2)}L-${formattedInput.slice(2, 6)}`);
+    }
   };
   
   const handleTeacherSubmit = async (e) => {
@@ -110,7 +123,7 @@ const Signup = () => {
 
       const data = await response.json();
       if (response.ok) {
-        console.log(response);
+        // console.log(response);
         setError("User Registered Successfully");
         setUsername("");
         setEmail("");
@@ -172,12 +185,13 @@ const Signup = () => {
 
             {/* Roll Number Input - Only show if the user is a student */}
             {role === 'student' && (
-              <input
+                <input
                 type="text"
                 placeholder="Roll Number"
                 required
                 value={rollNumber}
-                onChange={(e) => setRollNumber(e.target.value)}
+                onChange={handleChange}
+                maxLength="8" // Adjust maxLength to account for 'L-' and total number of characters
               />
             )}
 
