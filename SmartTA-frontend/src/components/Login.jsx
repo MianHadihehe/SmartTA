@@ -43,7 +43,8 @@ const Login = () => {
           // navigate('/submit-question', { state: { username } });
           navigate('/teacher-first', { state: { username } });
         } else if (role === 'student') {
-          navigate('/student-home', { state: { username } });
+          const { rollNumber } = data;
+          navigate('/student-home', { state: { rollNumber, username } });
         } else {
           setError('Invalid role');
         }

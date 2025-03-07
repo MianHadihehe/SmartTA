@@ -35,6 +35,7 @@ const login = async (req, res) => {
         token,
         role: student.role,
         username: student.username,
+        rollNumber: student.rollNumber,
       });
     }
 

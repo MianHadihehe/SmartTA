@@ -7,9 +7,15 @@ const register = async (req, res) => {
 
   try {
     // Check if user with the same email already exists
-    const existingStudent = await Student.findOne({ email });
+    const existingStudent = await Student.findOne({
+        $or: [
+          { email: email },
+          { rollNumber: rollNumber }
+        ]
+      });
+      
     if (existingStudent) {
-      return res.status(400).json({ message: "Email already in use" });
+      return res.status(400).json({ message: "Email or RollNumber already in use" });
     }
 
     // Hash the password before saving
