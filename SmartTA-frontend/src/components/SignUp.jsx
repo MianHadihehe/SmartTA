@@ -4,6 +4,7 @@ import '../styling/signup.css';
 
 const splineRoboURL = import.meta.env.VITE_ROBO_URL;
 
+
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');

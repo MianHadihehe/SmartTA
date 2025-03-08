@@ -90,7 +90,7 @@ const TeacherHome = () => {
         console.error('Failed response:', await response.text());
       }
     } catch (error) {
-      showUploadStatus('❌ Error Uploading Files.');
+      showMessage('❌ Error Uploading Files.');
       console.error('Error:', error);
     } finally {
       setIsLoading(false);

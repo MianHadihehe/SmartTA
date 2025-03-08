@@ -59,11 +59,11 @@ const Login = () => {
   return (
     <div className="login-main-cont">
       <div className="robo-cont">
-        {/* <iframe
+        <iframe
           src={splineRoboURL}
           id='robot'
           style={{ width: "100%", height: "100%" }}
-        ></iframe> */}
+        ></iframe>
 
         <div className="temp"></div>
       </div>
