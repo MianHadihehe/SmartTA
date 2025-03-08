@@ -8,6 +8,8 @@ const StudentSchema = new mongoose.Schema({
   rollNumber: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, required: true },
+  resetToken: { type: String },  // Add resetToken field
+  resetTokenExpiration: { type: Date },  // Add resetTokenExpiration field
 });
 
 // Hash the password before saving

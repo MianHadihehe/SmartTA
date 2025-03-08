@@ -9,6 +9,7 @@ const uploadRoute = require("./routes/UploadRouter"); // No .js extension needed
 const gradeRoute = require("./routes/GradeRouter");
 const gradeSaveRoute = require("./routes/GradeSaveRouter");
 const assignmentRoute = require("./routes/AssignmentRouter");
+const resetRoutes = require("./routes/ResetRouter");
 
 
 dotenv.config(); // Initialize environment variables
@@ -27,8 +28,7 @@ app.use("/api/upload", uploadRoute);
 app.use("/api/evaluate", gradeRoute);
 app.use("/api/submit-grades", gradeSaveRoute);
 app.use("/api/save-assignment", assignmentRoute);
-
-
+app.use("/api/reset", resetRoutes);
 
 // MongoDB Connection
 mongoose

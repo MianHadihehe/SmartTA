@@ -11,6 +11,7 @@ import StudentHome from './components/StudentHome';
 import TeacherGradesPage from './components/TeacherGradesPage';
 import SubmitQuestionPaper from './components/submitQuestionPaper';
 import TeacherFirst from './components/TeacherFirst';
+import ResetPassword from './components/ResetPassword';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/submit-question" element={<SubmitQuestionPaper />} />
         <Route path="/student-home" element={<StudentHome />} />
         <Route path="/teacher-grades" element={<TeacherGradesPage />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="*" element={<PageNotFound />} /> 
       </Routes>
     </Router>
