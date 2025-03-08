@@ -4,6 +4,8 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const dotenv = require("dotenv"); 
 dotenv.config();
+// import loadingSpinner from '../assets/loading-spinner.gif'; // Add a spinner image or animation
+
 
 exports.requestPasswordReset = async (req, res) => {
   console.log('Password reset request received');
@@ -42,7 +44,27 @@ exports.requestPasswordReset = async (req, res) => {
     const mailOptions = {
       to: user.email,
       subject: 'Password Reset Request',
-      html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`,
+      html: `<body style="margin: 0; padding: 0; width: 100%; height: 100%; background-color: black; color: white; font-family: Arial, sans-serif;">
+      <div style="width: 100%; max-width: 600px; margin: 0 auto; box-sizing: border-box;">
+          <div style="padding-left:5%; font-size:23px;">
+              <h1 style="color: white;">Smart<span style="color: rgb(234,67,89);">TA</span></h1>
+          </div>
+          <div style="margin-top: 20px; font-size: 18px; line-height: 1.5; padding-left:2%;">
+              Hey Mr. <span style="font-weight:bold;">${username}</span>, excited to see your progress on <strong>Smart<span style="color:rgb(234,67,89);">TA</span></strong>! We are here to support you every step of the way.
+              <br><br>We just received a request from your side to update your account's password.
+              <br><br>If you did not initiate it, you do not need to do anything. Otherwise, click the link below to reset your <strong>Smart<span style="color:rgb(234,67,89);">TA</span></strong> password:
+              <div style="text-align: center; margin-top: 20px;">
+                  <a href="http://localhost:5173/reset-password/[token]" style="color: rgb(156,53,53); font-weight:bolder; font-size:20px; text-decoration: none;">Reset Your Password</a>
+              </div>
+              <hr style="border: none; height: 1px; background-color: grey; margin: 20px 0;">
+              <div style="font-size: 14px;">
+                  <span style="color: rgb(255,45,0); font-size: 19px; font-weight: bold;">NOTE !!</span>
+                  <br>
+                  <span style="color: rgb(170,170,170);">Please keep your password confidential and ensure that it is not shared with anyone. This link will expire in 24 hours. If you did not request a password reset, please ignore this email.</span>
+              </div>
+          </div>
+      </div>
+  </body>`,
     };
 
     await transporter.sendMail(mailOptions);

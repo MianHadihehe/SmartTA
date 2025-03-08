@@ -73,7 +73,7 @@ const ForgotPassword = () => {
       {messageBoxVisible && <MessageBox message={messageBoxContent} />}
 
       {isLoading && (
-        <div className="loading-indicator">
+        <div className="loading-indicator-fp-one">
           <img src={loadingSpinner} alt="Loading..." />
           Loading...
         </div>

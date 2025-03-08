@@ -80,7 +80,7 @@ const ResetPassword = () => {
       </div>
 
       {isLoading && (
-        <div className="loading-indicator">
+        <div className="loading-indicator-reset">
           <img src={loadingSpinner} alt="Loading..." />
           Loading...
         </div>
