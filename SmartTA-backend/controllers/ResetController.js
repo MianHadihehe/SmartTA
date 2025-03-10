@@ -54,7 +54,7 @@ exports.requestPasswordReset = async (req, res) => {
               <br><br>We just received a request from your side to update your account's password.
               <br><br>If you did not initiate it, you do not need to do anything. Otherwise, click the link below to reset your <strong>Smart<span style="color:rgb(234,67,89);">TA</span></strong> password:
               <div style="text-align: center; margin-top: 20px;">
-                  <a href="http://localhost:5173/reset-password/[token]" style="color: rgb(156,53,53); font-weight:bolder; font-size:20px; text-decoration: none;">Reset Your Password</a>
+                  <a href="http://localhost:5173/reset-password/${resetToken}" style="color: rgb(156,53,53); font-weight:bolder; font-size:20px; text-decoration: none;">Reset Your Password</a>
               </div>
               <hr style="border: none; height: 1px; background-color: grey; margin: 20px 0;">
               <div style="font-size: 14px;">
