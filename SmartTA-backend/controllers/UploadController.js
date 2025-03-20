@@ -6,19 +6,15 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-// Handwriting OCR API Details
 const HANDWRITING_OCR_BASE_URL = process.env.HANDWRITING_OCR_BASE_URL;
 
-// console.log(HANDWRITING_OCR_BASE_URL);
 const HANDWRITING_OCR_AUTH_KEY = `Bearer ${process.env.HANDWRITING_OCR_API_KEY}`;
 
-// Upload the entire PDF to Handwriting OCR API
 const uploadPdfToOCR = async (filePath) => {
   try {
-    // Create FormData instance
     const formData = new FormData();
     formData.append("file", fs.createReadStream(filePath));
-    formData.append("action", "transcribe"); // Text extraction action
+    formData.append("action", "transcribe");
 
     console.log("Uploading PDF to Handwriting OCR API...");
     const response = await axios.post(
@@ -27,12 +23,12 @@ const uploadPdfToOCR = async (filePath) => {
       {
         headers: {
           Authorization: HANDWRITING_OCR_AUTH_KEY,
-          ...formData.getHeaders(), // Get headers from form-data
+          ...formData.getHeaders(), 
         },
       }
     );
 
-    return response.data.document_id; // Return the document ID
+    return response.data.document_id;
   } catch (error) {
     console.error("Error uploading PDF to Handwriting OCR API:", error.message);
     throw new Error("Failed to upload PDF to Handwriting OCR API.");
@@ -46,7 +42,6 @@ const getExtractedText = async (documentId, format = "txt", maxRetries = 10, del
     while (retries < maxRetries) {
       console.log(`Fetching status for Document ID: ${documentId} (Attempt ${retries + 1}/${maxRetries})...`);
 
-      // Fetch document details
       const response = await axios.get(
         `${HANDWRITING_OCR_BASE_URL}/documents/${documentId}`,
         {
@@ -57,26 +52,22 @@ const getExtractedText = async (documentId, format = "txt", maxRetries = 10, del
         }
       );
 
-      // Check if the document is processed
       if (response.data.status === "processed") {
         console.log("Document processed. Fetching extracted text...");
 
-        // Construct the download URL with the specified format
         const downloadUrl = `${HANDWRITING_OCR_BASE_URL}/documents/${documentId}.${format}`;
         console.log("Constructed Download URL:", downloadUrl);
 
-        // Download the extracted text
         const textResponse = await axios.get(downloadUrl, {
           headers: {
             Authorization: HANDWRITING_OCR_AUTH_KEY,
-            Accept: "application/json", // Ensure appropriate headers are set
+            Accept: "application/json",
           },
         });
 
-        return textResponse.data; // Return the extracted text
+        return textResponse.data; 
       }
 
-      // If not processed, wait and retry
       retries++;
       if (retries < maxRetries) {
         console.log(`Document not processed yet. Retrying in ${delay / 1000} seconds...`);
@@ -88,7 +79,7 @@ const getExtractedText = async (documentId, format = "txt", maxRetries = 10, del
   } catch (error) {
     console.error("Error retrieving extracted text:", error.message);
     if (error.response) {
-      console.error("Response Data:", error.response.data); // Log API response for debugging
+      console.error("Response Data:", error.response.data); 
     }
     throw new Error("Failed to retrieve extracted text.");
   }

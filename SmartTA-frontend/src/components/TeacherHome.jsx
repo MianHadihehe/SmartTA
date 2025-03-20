@@ -176,9 +176,8 @@ console.log("pressed button");
       </div>
       <div className="msg-robo-cont">
         <div className="welcome-msg"> 
-          Upload Student Responses here
+          <span style={{ display: uploadStatusCode === 0 ? 'block' : 'none' }}>Upload&nbsp;</span> <span style={{ display: uploadStatusCode === 1 ? 'block' : 'none' }}>Evaluate&nbsp;</span> Student Responses
         </div>
-
         <div className="walking-robo">
           <img className='walkingroboicon' src={walkingRobo} alt="" />
         </div>
@@ -192,6 +191,7 @@ console.log("pressed button");
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
+        <div className="second-in-command">
         <div className="upload-icon">
           <img src={uploadIcon} alt="Upload icon" />
         </div>
@@ -209,6 +209,7 @@ console.log("pressed button");
           />
         </div>
       </div>
+      </div>
 
       <div className="submit-cont">
         <button 
@@ -221,6 +222,7 @@ console.log("pressed button");
           Upload Files
         </button>
         <button 
+         style={{ display: uploadStatusCode === 1 ? 'block' : 'none' }}
           className='btn-submit' 
           onClick={handleEvaluate} 
           type='submit' 
@@ -241,7 +243,6 @@ console.log("pressed button");
     {uploadStatus.message}
   </div>
 )}
-
 
     </div>
   );

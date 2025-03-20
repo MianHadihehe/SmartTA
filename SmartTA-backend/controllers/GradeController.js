@@ -3,31 +3,28 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-// OpenAI API Configuration
 const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 /**
- * Send OCR-extracted text to GPT-3.5 for grading.
  * @param {string} ocrText - The text extracted from the OCR API.
  * @returns {Promise<string>} - The response text (graded result) from GPT-3.5.
  */
+
  const gradeTextWithGPT = async (ocrText, questions) => {
   try {
     console.log("Sending OCR text to GPT-3.5 for grading...");
 
-    // Ensure ocrText and questions are strings
     if (typeof ocrText !== "string") {
-      ocrText = JSON.stringify(ocrText); // Convert to string if it's an object
+      ocrText = JSON.stringify(ocrText);
     }
 
     if (typeof questions !== "string") {
-      questions = JSON.stringify(questions); // Convert to string if it's an object
+      questions = JSON.stringify(questions); 
     }
 
-    console.log("GC, OCR text of answer:", ocrText);
-    console.log("GC, OCR text of question:", questions);
-
+    // console.log("GC, OCR text of answer:", ocrText);
+    // console.log("GC, OCR text of question:", questions);
     const response = await axios.post(
       OPENAI_API_URL,
       {
@@ -35,11 +32,19 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
         messages: [
           {
             role: "system",
-            content: "You are a teaching assistant responsible for grading student assignments according to the questions.Your job is to give Marks and an extensive feedback to the student.",
+            content: `You are a teaching assistant responsible for grading student assignments 
+            according to the questions. Your job is to give Marks and an extensive 
+            feedback to the student.`,
           },
           {
             role: "user",
-            content: `These are the questions to grade: ${questions}.Ensure you are grading on the basis of the marks given in the question paper. Please grade the following student response and provide feedback and total marks.\n\n${ocrText}.Use I and 1 in between strings as seperators(|) as they do in automata . Give grade as 'Marks:' and feedback as 'Feedback:', separate grade and feedback with a semicolon.`,
+            content: `These are the questions to grade: ${questions}.
+            Ensure you are grading on the basis of the marks given in the question paper. 
+            Please grade the following student response and provide feedback and 
+            total marks.\n\n${ocrText}.
+            Use I and 1 in between strings as seperators(|) as they do in automata.
+            Give grade as 'Marks:' and feedback as 'Feedback:', separate grade and 
+            feedback with a semicolon.`,
           },
         ],
       },
@@ -53,7 +58,6 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
     console.log("Received response from GPT-3.5.");
 
-    // Ensure response contains the expected structure
     if (!response.data || !response.data.choices || !response.data.choices[0].message) {
       throw new Error("Unexpected response structure from GPT-3.5.");
     }
@@ -74,10 +78,6 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
   }
 };
 
-
-/**
- * Controller to handle grading via GPT-3.5.
- */
 const gradeOCRText = async (ocrText, questions) => {
   try {
     console.log("Grading OCR text...");
@@ -85,17 +85,13 @@ const gradeOCRText = async (ocrText, questions) => {
     if (!ocrText) {
       throw new Error("Provided OCR text is empty or invalid.");
     }
-
-    // console.log("Text to grade:", ocrText.substring(0, 100)); // Log first 100 characters for debugging
-
-    // Get graded result from GPT
     const gradedText = await gradeTextWithGPT(ocrText, questions);
 
-    console.log("Graded text received from GPT-4:", gradedText.substring(0, 100)); // Log first 100 characters
-    return gradedText; // Return the graded text, but do not send a response here
+    console.log("Graded text received from GPT-4:", gradedText.substring(0, 100)); 
+    return gradedText; 
   } catch (error) {
     console.error("Error grading OCR text:", error.message);
-    throw new Error(error.message || "Failed to grade OCR text."); // Pass error to the router
+    throw new Error(error.message || "Failed to grade OCR text."); 
   }
 };
 

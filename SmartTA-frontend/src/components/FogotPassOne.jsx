@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';  
 import '../styling/forgotpassone.css'; 
 import MessageBox from './MessageBox';
-import loadingSpinner from '../assets/loading-spinner.gif'; // Add a spinner image or animation
+import loadingSpinner from '../assets/loading-spinner.gif'; 
 
 
 const splineURL = import.meta.env.VITE_BABYROBO_URL;

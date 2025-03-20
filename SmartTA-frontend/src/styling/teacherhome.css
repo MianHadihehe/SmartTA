@@ -68,7 +68,7 @@ background-color:#b33636;
 
 .drag-drop-area {
   width: 90%;
-  height: 55vh;
+  height: 60vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -76,10 +76,11 @@ background-color:#b33636;
   border-radius:16px;
   background:rgb(97, 97, 97);
   transition: background-color 0.3s ease-in-out;
+  /* border:2px solid orange; */
 }
 
 .file-upload-btn-cont{
-  margin-left:6%;
+  /* margin-left:6%; */
 }
 
 .msg-robo-cont{
@@ -90,8 +91,10 @@ background-color:#b33636;
 }
 
 .upload-icon{
+  /* border: 2px solid red; */
   width:7%;
   height:20%;
+
 }
 
 img{
@@ -141,6 +144,19 @@ img{
 .drag-drop-message {
   font-size: 24px;
   color: black;
+  /* border: 2px solid yellow; */
+}
+
+.second-in-command{
+  width:95%;
+  height:90%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  border:8px solid black;
+  border-radius:16px;
+  font-size: 30px;
 }
 
 ul {

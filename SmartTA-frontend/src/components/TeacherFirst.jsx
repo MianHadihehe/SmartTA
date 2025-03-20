@@ -134,20 +134,20 @@ const TeacherFirst = () => {
             className={`upload ${method === 'upload' ? 'selected' : ''}`}
             onClick={() => selectMethod('upload')}
           >
-            Upload New Assignment
+            Upload New Question Paper
           </div>
 
           <div 
             className={`select ${method === 'select' ? 'selected' : ''}`}
             onClick={() => selectMethod('select')}
           >
-            Select from Saved Assignments
+            Select from Saved Question Papers
 
             {method === 'select' && 
             <div className='uploaded-assignments'>
             <select onChange={handleSelectChange}>
                 <option value="">
-                Select an Assignment...
+                Select an Assignment
                 </option>
                 {assignments.map((assignment) => (
                     <option key={assignment._id} value={assignment.assignmentNumber} data-text={assignment.text}>

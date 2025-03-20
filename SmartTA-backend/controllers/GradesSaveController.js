@@ -31,8 +31,6 @@ exports.getGrades = async (req, res) => {
 
 exports.getGradesByRollNumber = async (req, res) => {
   const rollNumber = req.query.rollNumber;
-//   console.log(rollNumber);
-//   console.log("in get some");
   try {
     const grades = await StudentGrade.find({ rollNumber });
     res.status(200).json(grades);
