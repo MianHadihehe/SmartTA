@@ -4,12 +4,13 @@ const Assignment = require('../models/Assignment');
 
 exports.saveAssignemnt = async (req, res) => {
     try {
-      let { assignmentNumber, text } = req.body;
-      text = text.text;
+      let { assignmentNumber, questionPaper, modelSolution } = req.body;
+      modelSolution = modelSolution.text;
     //   console.log(rollNumber, grade, feedback, assignmentNumber);
       const newAssignemnt = await Assignment.create({
         assignmentNumber,
-        text
+        questionPaper,
+        modelSolution
       });
       res.status(201).json(newAssignemnt);
     } catch (error) {

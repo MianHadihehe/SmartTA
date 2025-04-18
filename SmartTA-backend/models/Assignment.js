@@ -5,7 +5,11 @@ const assignmentSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    text: {
+    modelSolution: {
+        type: String,
+        required: true
+    },
+    questionPaper: {
         type: String,
         required: true
     },

@@ -11,7 +11,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
  * @returns {Promise<string>} - The response text (graded result) from GPT-3.5.
  */
 
- const gradeTextWithGPT = async (ocrText, questions) => {
+ const gradeTextWithGPT = async (ocrText, questions, solution) => {
   try {
     console.log("Sending OCR text to GPT-3.5 for grading...");
 
@@ -21,6 +21,10 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
     if (typeof questions !== "string") {
       questions = JSON.stringify(questions); 
+    }
+
+    if (typeof solution !== "string") {
+      solution = JSON.stringify(solution); 
     }
 
     // console.log("GC, OCR text of answer:", ocrText);
@@ -41,10 +45,10 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
             content: `These are the questions to grade: ${questions}.
             Ensure you are grading on the basis of the marks given in the question paper. 
             Please grade the following student response and provide feedback and 
-            total marks.\n\n${ocrText}.
+            total marks.\n\n${ocrText}, by comparing with model solution: ${solution} using a rubric.
             Use I and 1 in between strings as seperators(|) as they do in automata.
-            Give grade as 'Marks:' and feedback as 'Feedback:', separate grade and 
-            feedback with a semicolon.`,
+            Give grade as 'Marks:' and feedback as 'Feedback:', Strictly separate grade and 
+            feedback with a semicolon (;)`,
           },
         ],
       },

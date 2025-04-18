@@ -22,9 +22,12 @@ const TeacherHome = () => {
   const [messageBoxVisible, setMessageBoxVisible] = useState(false);
   const [messageBoxContent, setMessageBoxContent] = useState('');  
 
-  const questionPaper = location.state?.uploadedData;
+  const questionPaper = location.state?.questionPaper;
   const assignmentNumber = location.state?.assignmentNumber;
   const username = location.state?.username;
+  const modelSolution = location.state?.modelSolution;
+
+  // console.log(questionPaper);
 
   // console.log("question paper receied in teavhe rhome is: \n",questionPaper);
 
@@ -115,7 +118,7 @@ console.log("pressed button");
       const response = await fetch('http://localhost:8080/api/evaluate/grade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: uploadedData, questions: questionPaper }), 
+        body: JSON.stringify({ data: uploadedData, questions: questionPaper, solution: modelSolution }), 
       });
 
       if (response.ok) {
@@ -176,7 +179,7 @@ console.log("pressed button");
       </div>
       <div className="msg-robo-cont">
         <div className="welcome-msg"> 
-          <span style={{ display: uploadStatusCode === 0 ? 'block' : 'none' }}>Upload&nbsp;</span> <span style={{ display: uploadStatusCode === 1 ? 'block' : 'none' }}>Evaluate&nbsp;</span> Student Responses
+          <span style={{ display: uploadStatusCode === 0 ? 'block' : 'none' }}>Upload&nbsp;</span> <span style={{ display: uploadStatusCode === 1 ? 'block' : 'none' }}>Evaluate&nbsp;</span> Student Response :
         </div>
         <div className="walking-robo">
           <img className='walkingroboicon' src={walkingRobo} alt="" />

@@ -12,6 +12,7 @@ import TeacherGradesPage from './components/TeacherGradesPage';
 import SubmitQuestionPaper from './components/submitQuestionPaper';
 import TeacherFirst from './components/TeacherFirst';
 import ResetPassword from './components/ResetPassword';
+import ModelSolutionPage from './components/modelSolutionPage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/teacher-home" element={<TeacherHome />} />
         <Route path="/submit-question" element={<SubmitQuestionPaper />} />
         <Route path="/student-home" element={<StudentHome />} />
+        <Route path="/model-solution" element={<ModelSolutionPage />} />
         <Route path="/teacher-grades" element={<TeacherGradesPage />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="*" element={<PageNotFound />} /> 

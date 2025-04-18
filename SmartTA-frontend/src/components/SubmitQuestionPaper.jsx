@@ -81,7 +81,7 @@ const SubmitQuestionPaper = () => {
         console.log('Files uploaded:', result);
         setUploadStatusCode(1);
         // handleSubmitQuestion(result);
-        saveAssignment(result);
+        navigate('/model-solution', { state: { assignmentNumber, username, uploadedData: result } });
       } else {
         showMessage('❌ File Upload Failed.');
         console.error('Failed response:', await response.text());
@@ -101,44 +101,44 @@ const SubmitQuestionPaper = () => {
   //   }, 3000); // 3 seconds
   // };
 
-  const saveAssignment = async (result) =>{
-    console.log("in save assignemnt number ", assignmentNumber);
-    console.log("data: ",result);
-    if (!assignmentNumber || !result) {
-      showMessage('❌ Some error occured while saving the assignment question paper.');
-      return;
-  }
+  // const saveAssignment = async (result) =>{
+  //   console.log("in save assignemnt number ", assignmentNumber);
+  //   console.log("data: ",result);
+  //   if (!assignmentNumber || !result) {
+  //     showMessage('❌ Some error occured while saving the assignment question paper.');
+  //     return;
+  // }
 
-    const requestBody = {
-        assignmentNumber: assignmentNumber,
-        text: result
-    };
+  //   const requestBody = {
+  //       assignmentNumber: assignmentNumber,
+  //       text: result
+  //   };
 
-    try {
-        const response = await fetch('http://localhost:8080/api/save-assignment', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        });
+  //   try {
+  //       const response = await fetch('http://localhost:8080/api/save-assignment', {
+  //           method: 'POST',
+  //           headers: {
+  //               'Content-Type': 'application/json'
+  //           },
+  //           body: JSON.stringify(requestBody)
+  //       });
 
-        const data = await response.json();
+  //       const data = await response.json();
 
-        if (response.ok) {
-            showMessage('✅ Assignment saved and uploaded successfully!');
-            // console.log(data);
-            setTimeout(() => {
-              navigate('/teacher-home', { state: { assignmentNumber, username, uploadedData: result } });
-          }, 2000); 
-        } else {
-            throw new Error(data.message || 'Failed to save the assignment');
-        }
-    } catch (error) {
-        // alert(`Error: ${error.message}`);
-        showMessage('❌ Some error occured while saving the assignment question paper.');
-    }
-  }
+  //       if (response.ok) {
+  //           showMessage('✅ Assignment saved and uploaded successfully!');
+  //           // console.log(data);
+  //           setTimeout(() => {
+  //             navigate('/model-solution', { state: { assignmentNumber, username, uploadedData: result } });
+  //         }, 1500); 
+  //       } else {
+  //           throw new Error(data.message || 'Failed to save the assignment');
+  //       }
+  //   } catch (error) {
+  //       // alert(`Error: ${error.message}`);
+  //       showMessage('❌ Some error occured while saving the assignment question paper.');
+  //   }
+  // }
 
   // const handleSubmitQuestion = (result) => {
   //   if (!result) {
@@ -212,7 +212,7 @@ const SubmitQuestionPaper = () => {
 
       {/* Welcome Message and Robo Icon */}
       <div className="msg-robo-cont">
-        <div className="welcome-msg">Welcome, Prof. {username}</div>
+        <div className="welcome-msg">Submit Question Paper :</div>
         <div className="walking-robo">
           <img className="walkingroboicon" src={walkingRobo} alt="Walking Robo" />
         </div>
@@ -264,9 +264,9 @@ const SubmitQuestionPaper = () => {
         </div>
       )}
 
-{messageBoxVisible && <MessageBox message={messageBoxContent} />}
+      {messageBoxVisible && <MessageBox message={messageBoxContent} />}
 
-{isModalOpen && (
+      {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
             <div className="model-content-cont">
