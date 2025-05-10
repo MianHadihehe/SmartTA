@@ -18,6 +18,7 @@ const TeacherFirst = () => {
     const [messageBoxContent, setMessageBoxContent] = useState('');  
     const [selectedAssignmentNumber, setselectedAssignmentNumber] = useState('');
     const [selectedAssignemntText, setselectedAssignemntText] = useState('');
+    const [selectedAssignemntSolution, setselectedAssignemntSolution] = useState('');
 
     useEffect(()=>{
         fetchAssignments();
@@ -76,7 +77,7 @@ const TeacherFirst = () => {
             navigate('/submit-question', { state: { username } });
         }
         else if(method==='select'){
-            navigate('/teacher-home', { state: { username, assignmentNumber: selectedAssignmentNumber, uploadedData: selectedAssignemntText } });
+            navigate('/teacher-home', { state: { username, assignmentNumber: selectedAssignmentNumber, uploadedData: selectedAssignemntText, modelSolution: selectedAssignemntSolution  } });
         }
     }
 
@@ -86,9 +87,11 @@ const TeacherFirst = () => {
         const selectedOption = event.target.options[event.target.selectedIndex];
         const assignmentNumber = selectedOption.value;
         const assignmentText = selectedOption.getAttribute('data-text');
+        const modelSolution = selectedOption.getAttribute('model-solution');
     
         setselectedAssignmentNumber(assignmentNumber);
         setselectedAssignemntText(assignmentText);
+        setselectedAssignemntSolution(modelSolution);
     };
 
     // useEffect(() => {
@@ -150,7 +153,7 @@ const TeacherFirst = () => {
                 Select an Assignment
                 </option>
                 {assignments.map((assignment) => (
-                    <option key={assignment._id} value={assignment.assignmentNumber} data-text={assignment.text}>
+                    <option key={assignment._id} value={assignment.assignmentNumber} data-text={assignment.questionPaper} model-solution={assignment.modelSolution}>
                         Assignment #{assignment.assignmentNumber}
                     </option>
                 ))}

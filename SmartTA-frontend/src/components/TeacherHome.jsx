@@ -31,6 +31,8 @@ const TeacherHome = () => {
 
   // console.log("question paper receied in teavhe rhome is: \n",questionPaper);
 
+  // console.log("model for this: :", modelSolution);
+
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
