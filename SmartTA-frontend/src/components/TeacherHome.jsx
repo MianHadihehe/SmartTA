@@ -1,7 +1,6 @@
-
-
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import JSZip from 'jszip';
 import '../styling/teacherhome.css'; 
 import uploadIcon from '../assets/upload_icon.png';
 import walkingRobo from '../assets/walking-robo.gif';
@@ -27,18 +26,7 @@ const TeacherHome = () => {
   const username = location.state?.username;
   const modelSolution = location.state?.modelSolution;
 
-  // console.log(questionPaper);
-
-  // console.log("question paper receied in teavhe rhome is: \n",questionPaper);
-
-  // console.log("model for this: :", modelSolution);
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-
+  // Helper to show temporary messages
   const showMessage = (message) => {
     setMessageBoxContent(message);
     setMessageBoxVisible(true);
@@ -47,21 +35,68 @@ const TeacherHome = () => {
     }, 5000);
   };
 
+  // Unzip any .zip file and return an array of File objects (PDFs or originals)
+  const processFiles = async (incomingFiles) => {
+    const out = [];
+    for (let file of incomingFiles) {
+      if (file.name.toLowerCase().endsWith('.zip')) {
+        try {
+          const buffer = await file.arrayBuffer();
+          const zip = await JSZip.loadAsync(buffer);
+          const pdfEntries = Object.keys(zip.files)
+            .filter(name => name.toLowerCase().endsWith('.pdf'));
+          if (pdfEntries.length === 0) {
+            showMessage('❌ No PDF found in zip.');
+            continue;
+          }
+          // take first PDF entry and strip any folder path
+          const entry = pdfEntries[0];
+          const baseName = entry.substring(entry.lastIndexOf('/') + 1);
+          const blob = await zip.file(entry).async('blob');
+          const pdfFile = new File([blob], baseName, { type: 'application/pdf' });
+          out.push(pdfFile);
+        } catch (e) {
+          console.error('Zip processing error:', e);
+          showMessage('❌ Could not read zip file.');
+        }
+      } else {
+        out.push(file);
+      }
+    }
+    return out;
+  };
+
+
+  console.log(rollNumber);
+
+  
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
 
   const handleDragLeave = () => {
     setIsDragging(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
     setIsDragging(false);
-  
+
     const droppedFiles = Array.from(e.dataTransfer.files);
-    setFiles(droppedFiles);
-    const rollNumbers = droppedFiles.map((file) => file.name.substring(0, 8));
+    const processed = await processFiles(droppedFiles);
+    setFiles(processed);
+    const rollNumbers = processed.map((file) => file.name.substring(0, 8));
     setRollNumber(rollNumbers);
   };
-  
+
+  const handleFileSelect = async (e) => {
+    const raw = Array.from(e.target.files);
+    const processed = await processFiles(raw);
+    setFiles(processed);
+    const rollNumbers = processed.map((file) => file.name.substring(0, 8));
+    setRollNumber(rollNumbers);
+  };
 
   const uploadFiles = async () => {
     if (files.length === 0) {
@@ -86,9 +121,7 @@ const TeacherHome = () => {
       if (response.ok) {
         const result = await response.json();
         setUploadedData(result); 
-        // rollNumberRender();
         showMessage('✅ Files Uploaded Successfully!');
-        // console.log('Files uploaded:', result);
         setUploadStatusCode(1);
       } else {
         showMessage('❌ File Upload Failed.');
@@ -102,12 +135,6 @@ const TeacherHome = () => {
     }
   };
 
-  // console.log(questionPaper);
-
-
-  // console.log(rollNumber);
-  
-
   const handleEvaluate = async () => {
     if (!uploadedData) {
       showMessage('❌ No uploaded data to evaluate.');
@@ -115,7 +142,6 @@ const TeacherHome = () => {
     }
 
     setIsLoading(true);
-console.log("pressed button");
     try {
       const response = await fetch('http://localhost:8080/api/evaluate/grade', {
         method: 'POST',
@@ -125,7 +151,6 @@ console.log("pressed button");
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Evaluation result:', result);
         navigate('/teacher-grades', { state: { result, rollNumber, assignmentNumber, username } }); 
       } else {
         console.error('Evaluation failed:', await response.text());
@@ -139,14 +164,6 @@ console.log("pressed button");
     }
   };
 
-  const handleFileSelect = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setFiles(selectedFiles);
-    const rollNumbers = selectedFiles.map((file) => file.name.substring(0, 8));
-    setRollNumber(rollNumbers);
-  };
-  
-
   const renderFileList = () => {
     if (files.length === 0) {
       return <p>No files selected yet. Drag and drop files here or use the file picker.</p>;
@@ -154,10 +171,10 @@ console.log("pressed button");
 
     return (
       <ul>
-      {files.map((file, index) => (
-        <li key={index}>{file.name.substring(0, 8)}</li>
-      ))}
-    </ul>
+        {files.map((file, index) => (
+          <li key={index}>{file.name.substring(0, 8)}</li>
+        ))}
+      </ul>
     );
   };
 
@@ -197,23 +214,24 @@ console.log("pressed button");
         onDrop={handleDrop}
       >
         <div className="second-in-command">
-        <div className="upload-icon">
-          <img src={uploadIcon} alt="Upload icon" />
+          <div className="upload-icon">
+            <img src={uploadIcon} alt="Upload icon" />
+          </div>
+          <div className="drag-drop-message">
+            {isDragging ? 'Release to drop files' : 'Drag and drop files here'}
+          </div>
+          {renderFileList()}
+          <div className="file-upload-btn-cont">
+            <input
+              type="file"
+              multiple
+              accept=".pdf,.zip"
+              onChange={handleFileSelect}
+              className="file-upload-input"
+              disabled={isLoading} // Disable file selection when loading
+            />
+          </div>
         </div>
-        <div className="drag-drop-message">
-          {isDragging ? 'Release to drop files' : 'Drag and drop files here'}
-        </div>
-        {renderFileList()}
-        <div className="file-upload-btn-cont">
-          <input
-            type="file"
-            multiple
-            onChange={handleFileSelect}
-            className="file-upload-input"
-            disabled={isLoading} // Disable file selection when loading
-          />
-        </div>
-      </div>
       </div>
 
       <div className="submit-cont">
@@ -227,7 +245,7 @@ console.log("pressed button");
           Upload Files
         </button>
         <button 
-         style={{ display: uploadStatusCode === 1 ? 'block' : 'none' }}
+          style={{ display: uploadStatusCode === 1 ? 'block' : 'none' }}
           className='btn-submit' 
           onClick={handleEvaluate} 
           type='submit' 
@@ -240,15 +258,15 @@ console.log("pressed button");
       {isLoading && (
         <div className="loading-indicator">
           <img src={loadingSpinner} alt="Loading..." />
-            Loading...
+          Loading...
         </div>
-         )} 
-      {uploadStatus && (
-  <div className={`upload-status ${uploadStatus.isSuccess ? 'success' : 'error'}`}>
-    {uploadStatus.message}
-  </div>
-)}
+      )} 
 
+      {uploadStatus && (
+        <div className={`upload-status ${uploadStatus.isSuccess ? 'success' : 'error'}`}>
+          {uploadStatus.message}
+        </div>
+      )}
     </div>
   );
 };
