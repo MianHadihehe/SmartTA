@@ -3,8 +3,12 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+const OPENAI_API_URL = process.env.OPENAI_API_URL;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+const content = process.env.content;
+
+
 
 /**
  * @param {string} ocrText - The text extracted from the OCR API.
@@ -27,6 +31,9 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
       solution = JSON.stringify(solution); 
     }
 
+    console.log("url: ",OPENAI_API_URL);
+    console.log("content: ",content);
+
     // console.log("GC, OCR text of answer:", ocrText);
     // console.log("GC, OCR text of question:", questions);
     const response = await axios.post(
@@ -36,16 +43,14 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
         messages: [
           {
             role: "system",
-            content: `You are a teaching assistant responsible for grading student assignments 
-            according to the questions. Your job is to give Marks and an extensive 
-            feedback to the student.`,
+            content: process.env.content,
           },
           {
             role: "user",
             content: `These are the questions to grade: ${questions}.
             Ensure you are grading on the basis of the marks given in the question paper. 
             Please grade the following student response and provide feedback and 
-            total marks.\n\n${ocrText}, by comparing with model solution: ${solution} using a rubric.
+            total marks (thirty).\n\n${ocrText}, by comparing with model solution: ${solution} using a rubric.
             Use I and 1 in between strings as seperators(|) as they do in automata.
             Give grade as 'Marks:' and feedback as 'Feedback:', Strictly separate grade and 
             feedback with a semicolon (;)`,

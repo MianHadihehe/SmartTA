@@ -2,7 +2,7 @@
 const axios = require("axios");
 require("dotenv").config();
 
-const HF_API_URL = "https://api-inference.huggingface.co/models/hadimian/Smart-TA-8bit";
+const HF_API_URL = process.env.HF_API_URL;
 const HF_TOKEN = process.env.HF_TOKEN || process.env.HF_API_KEY;
 if (!HF_TOKEN) {
   console.error("ERROR: Missing Hugging Face token in HF_TOKEN or HF_API_KEY");
